@@ -5,8 +5,8 @@ This repo is the "how to build it" companion to two existing repos:
 
 | Repo | What it holds |
 |---|---|
-| [pantsnotnecessary/bike-dash](https://github.com/pantsnotnecessary/bike-dash) (private) | The dash firmware (ESPHome/LVGL): GPS speed, BMS status, media strip, SD ride log |
-| [pantsnotnecessary/ant-bms-epaper-gauge](https://github.com/pantsnotnecessary/ant-bms-epaper-gauge) (public) | The original e-paper SOC gauge; the ANT-BMS BLE logic came from here |
+| [appsbyaaronb/bike-dash](https://github.com/appsbyaaronb/bike-dash) (private) | The dash firmware (ESPHome/LVGL): GPS speed, BMS status, media strip, SD ride log |
+| [appsbyaaronb/ant-bms-epaper-gauge](https://github.com/appsbyaaronb/ant-bms-epaper-gauge) (public) | The original e-paper SOC gauge; the ANT-BMS BLE logic came from here |
 
 ## The decision (2026-09-18)
 
@@ -37,6 +37,9 @@ Full pin-by-pin steps, checks and troubleshooting: [docs/wiring.md](docs/wiring.
 | [docs/hardware.md](docs/hardware.md) | Pinouts, panel electrical limits, timings, gotchas (the reference behind the wiring guide) |
 | [docs/software.md](docs/software.md) | ESPHome bring-up plan, versions, stages |
 | [esphome/bike-dash-p4nano.yaml](esphome/bike-dash-p4nano.yaml) | Starting config: P4-NANO + Riverdi panel as a `mipi_dsi` CUSTOM model |
+| [esphome/bike-dash-live.yaml](esphome/bike-dash-live.yaml) | **Current working firmware** (no panel yet): BMS over BLE, iPhone media remote, dash page on :8080, fixed IP |
+| [esphome/components/](esphome/components/) | Custom components: `ams` (iPhone Apple Media Service remote), `dash_page` (serves the dash page and media commands) |
+| [esphome/dash.html](esphome/dash.html) | The dash page, built into the firmware |
 | [docs/build-log.md](docs/build-log.md) | Dated log of what was done and what was learned |
 | [enclosure/](enclosure/README.md) | OpenSCAD model, STLs and previews of the printed housing (bezel, retainer, shell, GPS cap) |
 
@@ -50,3 +53,4 @@ Four printed parts, PETG/ASA, M3 inserts. Details, hardware list and the VERIFY 
 
 - 2026-09-18: research done, all core parts ordered (Amazon plus the Riverdi panel from DigiKey). Nothing built yet.
 - 2026-09-18: enclosure mockup modelled in OpenSCAD, STLs exported. Several dimensions still need calipers on the real parts (see enclosure/README.md).
+- 2026-09-28: board flashed. BMS live over the C6, iPhone media control working, dash page at `http://192.168.7.18:8080/`. Panel and GPS not connected yet.

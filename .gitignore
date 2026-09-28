@@ -3,3 +3,5 @@ secrets.yaml
 *.bin
 *.pdf
 CLAUDE.md
+*.log
+__pycache__/

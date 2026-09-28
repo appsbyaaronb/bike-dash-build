@@ -1,0 +1,287 @@
+# bike-dash on Waveshare ESP32-P4-NANO + Riverdi RVT70HSMNWC00-B (7" 1024x600, 850 nit)
+# Stage 0/1 bring-up config. Validate with `esphome config` first.
+# Pins follow docs/wiring.md: panel RESET on GPIO27, PT4115 DIM on GPIO26 (P4-NANO BSP defaults).
+
+substitutions:
+  bms_name_prefix: "ANT-BLE"
+  name: bike-dash
+  lcd_reset_pin: GPIO27
+  backlight_pwm_pin: GPIO26
+  gps_tx_pin: GPIO24   # P4 TX -> GPS RX. Any free header GPIO; check the silkscreen
+  gps_rx_pin: GPIO25   # P4 RX <- GPS TX
+
+esphome:
+  name: ${name}
+
+esp32:
+  variant: esp32p4
+  flash_size: 16MB
+  cpu_frequency: 360MHz
+  framework:
+    type: esp-idf
+    # sdkconfig_options:
+    #   CONFIG_ESP_MAIN_TASK_STACK_SIZE: "16384"
+
+psram:
+  mode: hex
+  speed: 200MHz
+
+logger:
+  hardware_uart: UART0
+  level: DEBUG
+
+# Onboard ESP32-C6 (Wi-Fi 6 / BLE) over SDIO. Values from the ESPHome device page for the P4-NANO.
+esp32_hosted:
+  variant: ESP32C6
+  active_high: true
+  reset_pin: GPIO54
+  cmd_pin: GPIO19
+  clk_pin: GPIO18
+  d0_pin: GPIO14
+  d1_pin: GPIO15
+  d2_pin: GPIO16
+  d3_pin: GPIO17
+
+api:
+ota:
+  platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  manual_ip:
+    static_ip: 192.168.7.18
+    gateway: 192.168.7.1
+    subnet: 255.255.255.0
+    dns1: 192.168.8.105
+    dns2: 9.9.9.9
+
+i2c:
+  sda: GPIO7
+  scl: GPIO8
+  frequency: 400kHz
+
+# GPS: u-blox M8/M10 on a UART. Module must be set to 10 Hz / 115200 (docs/wiring.md Step 4b).
+uart:
+  - id: gps_uart
+    tx_pin: ${gps_tx_pin}
+    rx_pin: ${gps_rx_pin}
+    baud_rate: 115200
+    rx_buffer_size: 2048
+
+gps:
+  uart_id: gps_uart
+  latitude:
+    name: GPS Latitude
+  longitude:
+    name: GPS Longitude
+  altitude:
+    name: GPS Altitude
+  satellites:
+    name: GPS Satellites
+  course:
+    name: GPS Course
+  speed:
+    name: GPS Speed
+    id: gps_speed_kmh
+    # ESPHome reports km/h; the dash wants mph
+    on_value:
+      then:
+        - sensor.template.publish:
+            id: speed_mph
+            state: !lambda 'return x * 0.621371;'
+
+sensor:
+  - platform: ant_bms_ble
+    ant_bms_ble_id: bms0
+    soc:
+      name: "soc"
+      id: pack_soc
+    total_voltage:
+      name: "voltage"
+      id: pack_voltage
+    current:
+      name: "current"
+      id: pack_current
+    capacity_remaining:
+      name: "ah_remaining"
+      id: pack_ah
+    temperature_1:
+      name: "temp1"
+      id: t1
+    temperature_2:
+      name: "temp2"
+      id: t2
+    temperature_3:
+      name: "temp3"
+      id: t3
+    temperature_4:
+      name: "temp4"
+      id: t4
+  - platform: template
+    id: speed_mph
+    name: Speed
+    unit_of_measurement: mph
+    accuracy_decimals: 0
+
+time:
+  - platform: gps
+    id: gps_time
+
+# If the GPS module forgets its 10 Hz / 115200 setting on power loss (no flash / no battery),
+# move this on_boot block under the existing `esphome:` key at the top so the dash re-sends it
+# at every boot. The module boots at 9600 in that case, so the first two writes go out at 9600,
+# then the UART is switched to 115200.
+#   on_boot:
+#     priority: -100
+#     then:
+#       - lambda: |-
+#           id(gps_uart).set_baud_rate(9600); id(gps_uart).load_settings();
+#       - uart.write: {id: gps_uart, data: [0xB5,0x62,0x06,0x08,0x06,0x00,0x64,0x00,0x01,0x00,0x01,0x00,0x7A,0x12]}
+#       - uart.write: {id: gps_uart, data: [0xB5,0x62,0x06,0x00,0x14,0x00,0x01,0x00,0x00,0x00,0xD0,0x08,0x00,0x00,0x00,0xC2,0x01,0x00,0x07,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0xC0,0x7E]}
+#       - delay: 200ms
+#       - lambda: |-
+#           id(gps_uart).set_baud_rate(115200); id(gps_uart).load_settings();
+
+# Backlight: LEDC PWM into the PT4115 DIM pin. About 5 kHz so it is not visible.
+output:
+  - platform: ledc
+    id: backlight_pwm
+    pin: ${backlight_pwm_pin}
+    frequency: 5000Hz
+
+light:
+  - platform: monochromatic
+    id: backlight
+    name: Backlight
+    output: backlight_pwm
+    restore_mode: ALWAYS_ON
+
+
+# Live data for the desktop simulator (REST + /events).
+web_server:
+  port: 80
+  version: 3
+
+external_components:
+  - source:
+      type: local
+      path: components
+    components: [ams, dash_page]
+  - source: github://syssi/esphome-ant-bms@main
+
+globals:
+  # Whether the BMS BLE link is currently up.
+  - id: bms_connected
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  # Strongest RSSI seen during discovery, so we lock onto the NEAREST ANT pack.
+  - id: best_rssi
+    type: int
+    restore_value: no
+    initial_value: '-127'
+
+# Auto-discovery: watch every advertisement and point ble_client at the
+# strongest-signal device whose name starts with ${bms_name_prefix}. No
+# hardcoded MAC — a fresh pack just gets re-found. (Carried over unchanged.)
+esp32_ble_tracker:
+  scan_parameters:
+    # Aggressive 100%-duty active scan to reliably catch this BMS's brief
+    # advert. If the C6/hosted link logs "Dropped BLE events", relax these
+    # (e.g. interval 320ms / window 300ms) — the separate C6 antenna should
+    # need less aggression than the S3 did.
+    active: true
+    interval: 160ms
+    window: 160ms
+  on_ble_advertise:
+    - then:
+        - lambda: |-
+            std::string n = x.get_name();
+            if (!n.empty()) ESP_LOGI("seen", "%s  %s  %d dBm", n.c_str(), x.address_str().c_str(), x.get_rssi());
+            if (id(bms_connected)) return;
+            if (n.rfind("${bms_name_prefix}", 0) != 0) return;   // not an ANT BMS
+            int r = x.get_rssi();
+            if (r > id(best_rssi)) {                              // nearer than any seen
+              id(best_rssi) = r;
+              id(ant_client).set_address(x.address_uint64());
+              ESP_LOGI("autodiscover", "ANT BMS '%s' (%d dBm) -> target %s",
+                       n.c_str(), r, x.address_str().c_str());
+            }
+
+ble_client:
+  - id: ant_client
+    # All-zero seed; on_ble_advertise sets the real address at runtime.
+    mac_address: "00:00:00:00:00:00"
+    on_connect:
+      then:
+        - lambda: 'id(bms_connected) = true;'
+    on_disconnect:
+      then:
+        # Re-arm discovery so we can re-acquire (possibly a different pack).
+        - lambda: |-
+            id(bms_connected) = false;
+            id(best_rssi) = -127;
+
+ant_bms_ble:
+  - id: bms0
+    ble_client_id: ant_client
+    update_interval: 10s
+
+update:
+  - platform: esp32_hosted
+    id: c6_fw
+    name: C6 Firmware
+    type: embedded
+    path: firmware/c6_hosted_2.12.12.bin
+    sha256: 3d4028101c2631572fcc87ea685467c07041d8e2b5c12d8b5cb2a2dec3c554b7
+
+binary_sensor:
+  - platform: template
+    name: Phone Connected
+    lambda: return id(phone).is_ready();
+  - platform: template
+    name: Phone Playing
+    lambda: return id(phone).playing();
+  - platform: template
+    id: bms_link
+    name: BMS Connected
+    lambda: return id(bms_connected);
+
+# iPhone media control over Apple Media Service (components/ams).
+ams:
+  id: phone
+  device_name: Bike Dash
+
+text_sensor:
+  - platform: template
+    name: Track Title
+    lambda: return id(phone).title();
+    update_interval: 1s
+  - platform: template
+    name: Track Artist
+    lambda: return id(phone).artist();
+    update_interval: 1s
+
+button:
+  - platform: template
+    name: Media PlayPause
+    on_press: [lambda: id(phone).send(2);]
+  - platform: template
+    name: Media Next
+    on_press: [lambda: id(phone).send(3);]
+  - platform: template
+    name: Media Prev
+    on_press: [lambda: id(phone).send(4);]
+  - platform: template
+    name: Media VolUp
+    on_press: [lambda: id(phone).send(5);]
+  - platform: template
+    name: Media VolDown
+    on_press: [lambda: id(phone).send(6);]
+
+# The dash page itself, served from the board at http://192.168.7.18:8080/
+dash_page:
+  path: dash.html
+  port: 8080
+  ams_id: phone
