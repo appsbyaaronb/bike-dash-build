@@ -29,7 +29,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
   <div class="left">
     <div class="top"><span class="gps" id="gpsTag">GPS●<span id="sats">0</span></span><span>TRIP <span id="trip">0.0</span>mi</span><span class="rec" id="rec">●REC</span></div>
     <div class="speed"><b id="spd">0</b><span>MPH</span></div>
-    <div class="bottom"><span id="clock"></span><span>xx°F</span></div>
+    <div class="bottom"><span id="clock"></span><span id="bmsTag">BMS●</span></div>
   </div>
   <div class="right">
     <div class="row"><span class="dim">SOC</span><span class="soc" id="soc">78%</span></div>
@@ -79,7 +79,7 @@ function tick(){
   const ts=['sensor/temp1','sensor/temp2','sensor/temp3','sensor/temp4'].map(g).filter(v=>v!==null);
   const temp=ts.length?Math.max(...ts):null;
   if(spd!==null)trip+=spd*(now-prev)/3600000;prev=now;
-  $('spd').textContent=spd===null?'0':spd.toFixed(0);$('sats').textContent=sat===null?'0':sat.toFixed(0);$('gpsTag').style.color=spd===null?'var(--bad)':'var(--acc)';$('trip').textContent=spd===null?'xx':trip.toFixed(1);
+  $('spd').textContent=spd===null?'0':spd.toFixed(0);$('sats').textContent=sat===null?'0':sat.toFixed(0);$('bmsTag').style.color=bms?'var(--acc)':'var(--bad)';$('gpsTag').style.color=spd===null?'var(--bad)':'var(--acc)';$('trip').textContent=spd===null?'xx':trip.toFixed(1);
   $('soc').textContent=soc===null?'xx%':Math.round(soc)+'%';
   $('socbar').style.width=(soc??0)+'%';
   $('socbar').style.background=soc===null?'var(--line)':soc<20?'var(--bad)':soc<35?'var(--warn)':'var(--acc)';
