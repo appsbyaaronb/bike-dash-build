@@ -41,7 +41,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
     <div class="row"><span>TEMP <span id="temp">32</span>°C</span><span class="dim">cut@60</span></div>
     <div class="row"><span>RANGE</span><span id="range">M44 / H27 mi</span></div>
     <hr><div class="dim"><span id="ah">44.0</span> Ah remaining</div>
-    <button id="rst" class="rst">Restart board</button>
+    <div style="display:flex;gap:12px"><button id="rst" class="rst">Restart board</button><button id="rbt" class="rst">Restart Bluetooth</button></div>
   </div>
   <div class="media"><span class="t rest" id="song"><span id="songIn">♪ no phone connected</span></span><button data-c="6">🔉</button><button data-c="4">⏮</button><button id="pp" data-c="2">⏯</button><button data-c="3">⏭</button><button data-c="5">🔊</button></div>
   <div id="alert"><b>TEMP <span id="atemp">52</span>°C</b><span>PACK OVERHEAT — EASE OFF</span></div>
@@ -121,5 +121,8 @@ $('rst').onclick=async()=>{const b=$('rst');b.classList.add('hit');setTimeout(()
  confirmArm=false;b.textContent='Restarting…';try{await fetch('/restart',{method:'POST'})}catch(e){}
  setTimeout(()=>location.reload(),15000)};
 let confirmArm=false;
+$('rbt').onclick=async()=>{const b=$('rbt');b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),150);
+ b.textContent='Restarting…';try{await fetch('/restart_bt',{method:'POST'})}catch(e){}
+ setTimeout(()=>b.textContent='Restart Bluetooth',4000)};
 setInterval(tick,250);tick();
 </script></body></html>

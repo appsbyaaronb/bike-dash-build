@@ -35,8 +35,20 @@ static esp_bt_uuid_t uuid128(const uint8_t *u) {
 void AMSComponent::setup() {}
 
 void AMSComponent::loop() {
-  if (esp32_ble::global_ble == nullptr || !esp32_ble::global_ble->is_active())
+  if (esp32_ble::global_ble == nullptr || !esp32_ble::global_ble->is_active()) {
+    // Bluetooth was switched off (e.g. Restart Bluetooth): the GATTC app and link are gone,
+    // so start over from registration when it comes back.
+    if (this->registered_) {
+      ESP_LOGI(TAG, "Bluetooth off, resetting phone link");
+      this->registered_ = this->adv_cfg_ = this->adv_on_ = false;
+      this->linked_ = this->ready_ = this->playing_ = this->track_sent_ = false;
+      this->if_ = ESP_GATT_IF_NONE;
+      this->h_cmd_ = this->h_upd_ = this->h_start_ = this->h_end_ = this->cccd_cmd_ = 0;
+      this->title_.clear();
+      this->artist_.clear();
+    }
     return;
+  }
   if (!this->registered_) {
     this->registered_ = true;
     // Bonded, no MITM (no keypad or display for a passkey).

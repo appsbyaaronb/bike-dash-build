@@ -291,6 +291,10 @@ dash_page:
   path: dash.html
   port: 8080
   ams_id: phone
+  # Forget the BMS target so discovery starts fresh after Restart Bluetooth.
+  on_bt_restart: |-
+    id(bms_connected) = false;
+    id(best_rssi) = -127;
 
 # Device log on its own port: http://192.168.7.18:8081/ (fixed 32 kB ring buffer in PSRAM).
 log_page:
