@@ -15,6 +15,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
 .row{display:flex;justify-content:space-between}
 .bar{height:22px;background:var(--line);border-radius:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc)}
+.net{margin-left:auto;font-size:17px;color:var(--dim);white-space:nowrap;align-self:center}.net .off{color:var(--bad);font-size:22px}
 .soc{font-size:54px;font-weight:700}
 .dim{color:var(--dim)} hr{border:0;border-top:2px solid var(--line);width:100%;margin:0}
 .media{grid-column:1/3;border-top:2px solid var(--line);display:flex;align-items:center;padding:0 28px;font-size:28px;gap:30px}
@@ -27,7 +28,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
 </style></head><body>
 <div id="dash">
   <div class="left">
-    <div class="top"><span class="gps" id="gpsTag">GPS●<span id="sats">0</span></span><span>TRIP <span id="trip">0.0</span>mi</span><span class="rec" id="rec">●REC</span></div>
+    <div class="top"><span class="gps" id="gpsTag">GPS●<span id="sats">0</span></span><span>TRIP <span id="trip">0.0</span>mi</span><span class="rec" id="rec">●REC</span><span class="net" id="net"></span></div>
     <div class="speed"><b id="spd">0</b><span>MPH</span></div>
     <div class="bottom"><span id="clock"></span><span id="bmsTag">BMS●</span></div>
   </div>
@@ -92,6 +93,8 @@ function tick(){
   pill('phl',ph?'Phone: connected':'Phone: not paired',ph?'ok':'bad');
   setSong(ph?('♪ '+(ti||'nothing playing')+(ar?' — '+ar:'')):'♪ no phone connected');
   $('pp').textContent=(ph&&L['binary_sensor/Phone Playing']===true)?'⏸':'▶';
+  const ip=on&&!demo?(live['text_sensor/IP Address']||''):'';
+  $('net').innerHTML=demo?'192.168.7.18 · dash :8080 · log :8081':ip&&ip!=='0.0.0.0'?`${ip} · dash :8080 · log :8081`:'<span class="off">📶✕ wifi</span>';
   $('clock').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}).toLowerCase().replace(' ','');
 }
 $('demo').onclick=()=>{demo=!demo;trip=0;dt=0;$('demo').textContent=demo?'Stop simulation':'Simulate data'};

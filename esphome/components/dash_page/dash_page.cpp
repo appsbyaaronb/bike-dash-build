@@ -10,6 +10,7 @@ void DashPage::setup() {
   cfg.server_port = this->port_;
   cfg.ctrl_port = 32769;  // web_server on :80 already holds the default control port
   cfg.max_open_sockets = 3;
+  cfg.lru_purge_enable = true;  // drop the oldest idle socket instead of refusing new ones
   if (httpd_start(&this->server_, &cfg) != ESP_OK) {
     ESP_LOGE(TAG, "Could not start on port %u", this->port_);
     this->mark_failed();

@@ -19,8 +19,9 @@ esp32:
   cpu_frequency: 360MHz
   framework:
     type: esp-idf
-    # sdkconfig_options:
-    #   CONFIG_ESP_MAIN_TASK_STACK_SIZE: "16384"
+    sdkconfig_options:
+      # Three HTTP servers (:80, :8080, :8081) + API + browser streams overran the default 13.
+      CONFIG_LWIP_MAX_SOCKETS: "24"
 
 psram:
   mode: hex
@@ -167,7 +168,7 @@ external_components:
   - source:
       type: local
       path: components
-    components: [ams, dash_page]
+    components: [ams, dash_page, log_page]
   - source: github://syssi/esphome-ant-bms@main
 
 globals:
@@ -198,7 +199,6 @@ esp32_ble_tracker:
     - then:
         - lambda: |-
             std::string n = x.get_name();
-            if (!n.empty()) ESP_LOGI("seen", "%s  %s  %d dBm", n.c_str(), x.address_str().c_str(), x.get_rssi());
             if (id(bms_connected)) return;
             if (n.rfind("${bms_name_prefix}", 0) != 0) return;   // not an ANT BMS
             int r = x.get_rssi();
@@ -254,6 +254,9 @@ ams:
   device_name: Bike Dash
 
 text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: IP Address
   - platform: template
     name: Track Title
     lambda: return id(phone).title();
@@ -285,3 +288,8 @@ dash_page:
   path: dash.html
   port: 8080
   ams_id: phone
+
+# Device log on its own port: http://192.168.7.18:8081/ (fixed 32 kB ring buffer in PSRAM).
+log_page:
+  port: 8081
+  buffer_size: 32kB
