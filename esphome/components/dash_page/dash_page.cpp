@@ -10,7 +10,7 @@ static const char *const TAG = "dash_page";
 void DashPage::setup() {
   httpd_config_t cfg = HTTPD_DEFAULT_CONFIG();
   cfg.server_port = this->port_;
-  cfg.ctrl_port = 32769;  // web_server on :80 already holds the default control port
+  cfg.ctrl_port = 32768 + (this->port_ - 8079);  // unique per page; :80 holds 32768, log :8081 32770
   cfg.max_open_sockets = 3;
   cfg.lru_purge_enable = true;  // drop the oldest idle socket instead of refusing new ones
   if (httpd_start(&this->server_, &cfg) != ESP_OK) {

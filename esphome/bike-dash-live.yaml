@@ -21,7 +21,7 @@ esp32:
     type: esp-idf
     sdkconfig_options:
       # Three HTTP servers (:80, :8080, :8081) + API + browser streams overran the default 13.
-      CONFIG_LWIP_MAX_SOCKETS: "24"
+      CONFIG_LWIP_MAX_SOCKETS: "32"
 
 psram:
   mode: hex
@@ -48,14 +48,21 @@ ota:
   platform: esphome
 
 wifi:
-  ssid: !secret wifi_ssid
-  password: !secret wifi_password
-  manual_ip:
-    static_ip: 192.168.7.18
-    gateway: 192.168.7.1
-    subnet: 255.255.255.0
-    dns1: 192.168.8.105
-    dns2: 9.9.9.9
+  networks:
+    # Home IoT (2.4 GHz). Fixed IP so the dash pages are always at 192.168.7.18.
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+      priority: 10
+      manual_ip:
+        static_ip: 192.168.7.18
+        gateway: 192.168.7.1
+        subnet: 255.255.255.0
+        dns1: 192.168.8.105
+        dns2: 9.9.9.9
+    # iPhone hotspot (turn on Maximize Compatibility for 2.4 GHz). DHCP from the phone.
+    - ssid: !secret wifi2_ssid
+      password: !secret wifi2_password
+      priority: 5
 
 i2c:
   sda: GPIO7
@@ -288,13 +295,21 @@ button:
 
 # The dash page itself, served from the board at http://192.168.7.18:8080/
 dash_page:
-  path: dash.html
-  port: 8080
-  ams_id: phone
-  # Forget the BMS target so discovery starts fresh after Restart Bluetooth.
-  on_bt_restart: |-
-    id(bms_connected) = false;
-    id(best_rssi) = -127;
+  - path: dash.html
+    port: 8080
+    ams_id: phone
+    # Forget the BMS target so discovery starts fresh after Restart Bluetooth.
+    on_bt_restart: |-
+      id(bms_connected) = false;
+      id(best_rssi) = -127;
+  # Phone-shaped dash (19.5:9, scales to the window): http://192.168.7.18:8082/
+  - path: phone.html
+    port: 8082
+    ams_id: phone
+    on_bt_restart: |-
+      id(bms_connected) = false;
+      id(best_rssi) = -127;
+
 
 # Device log on its own port: http://192.168.7.18:8081/ (fixed 32 kB ring buffer in PSRAM).
 log_page:
