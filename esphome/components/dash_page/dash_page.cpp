@@ -1,5 +1,6 @@
 #include "dash_page.h"
 #include "esphome/core/log.h"
+#include "esphome/core/application.h"
 
 namespace esphome::dash_page {
 
@@ -20,6 +21,8 @@ void DashPage::setup() {
   httpd_register_uri_handler(this->server_, &root);
   httpd_uri_t cmd{.uri = "/cmd", .method = HTTP_POST, .handler = cmd_, .user_ctx = this};
   httpd_register_uri_handler(this->server_, &cmd);
+  httpd_uri_t rst{.uri = "/restart", .method = HTTP_POST, .handler = restart_, .user_ctx = this};
+  httpd_register_uri_handler(this->server_, &rst);
   ESP_LOGI(TAG, "Dash page on port %u (%u bytes)", this->port_, (unsigned) this->len_);
 }
 
@@ -43,6 +46,14 @@ esp_err_t DashPage::cmd_(httpd_req_t *req) {
   }
   httpd_resp_set_type(req, "text/plain");
   return httpd_resp_sendstr(req, ok ? "ok" : "no phone");
+}
+
+// Restart button on the page. Reply first, then reboot from the main loop.
+esp_err_t DashPage::restart_(httpd_req_t *req) {
+  httpd_resp_sendstr(req, "restarting");
+  ESP_LOGW(TAG, "Restart requested from the dash page");
+  App.scheduler.set_timeout(static_cast<DashPage *>(req->user_ctx), "restart", 300, []() { App.safe_reboot(); });
+  return ESP_OK;
 }
 
 }  // namespace esphome::dash_page

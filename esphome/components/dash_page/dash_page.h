@@ -17,6 +17,7 @@ class DashPage : public Component {
  protected:
   static esp_err_t handle_(httpd_req_t *req);
   static esp_err_t cmd_(httpd_req_t *req);
+  static esp_err_t restart_(httpd_req_t *req);
   ams::AMSComponent *ams_{nullptr};
   uint16_t port_{8080};
   const char *html_{nullptr};

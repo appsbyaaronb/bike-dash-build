@@ -12,16 +12,17 @@ static const char PAGE[] = R"HTML(<!doctype html><html><head><meta charset="utf-
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Bike Dash Log</title>
 <style>:root{color-scheme:dark}body{margin:0;background:#05070a;color:#d8dee4;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace}
 header{position:sticky;top:0;background:#0d1117;border-bottom:1px solid #1f2933;padding:8px 14px;display:flex;gap:14px;align-items:center;font-family:system-ui,sans-serif}
-header b{font-size:15px}#st{color:#7d8b99}label{color:#7d8b99}pre{margin:0;padding:10px 14px;white-space:pre-wrap;word-break:break-word}
+header b{font-size:15px}header button{background:#1f2933;color:#d8dee4;border:1px solid #33414f;border-radius:6px;padding:4px 10px;cursor:pointer}header button:active{background:#fff;color:#000}#st{color:#7d8b99}label{color:#7d8b99}pre{margin:0;padding:10px 14px;white-space:pre-wrap;word-break:break-word}
 .E{color:#ff6b6b}.W{color:#ffb020}.I{color:#3ddc97}.C{color:#7fb3ff}.D{color:#8fa3b8}.V{color:#6c7a89}</style></head><body>
-<header><b>Bike Dash log</b><span id="st">connecting…</span><label><input type="checkbox" id="fol" checked> follow</label></header>
+<header><b>Bike Dash log</b><span id="st">connecting…</span><label><input type="checkbox" id="fol" checked> follow</label><button onclick="act('/clear')">Clear log</button><button onclick="act('/clear_ble')">Clear Bluetooth</button></header>
 <pre id="out"></pre><script>
-let since=0;const out=document.getElementById('out'),st=document.getElementById('st'),MAX=4000;
+let since=0,epoch=null;const out=document.getElementById('out'),st=document.getElementById('st'),MAX=4000;
 function add(t){const f=document.createDocumentFragment();for(const l of t.split('\n')){if(!l)continue;const d=document.createElement('div');
  const m=l.match(/^\[(.)\]/);if(m)d.className=m[1];d.textContent=l;f.appendChild(d)}out.appendChild(f);
  while(out.childElementCount>MAX)out.firstChild.remove();if(document.getElementById('fol').checked)scrollTo(0,document.body.scrollHeight)}
-async function poll(){try{const r=await fetch('/raw?since='+since);since=+r.headers.get('X-Total')||since;const t=await r.text();if(t)add(t);
+async function poll(){try{let r=await fetch('/raw?since='+since);const e=r.headers.get('X-Epoch');if(epoch!==null&&e!==epoch){out.textContent='';since=0;r=await fetch('/raw?since=0')}epoch=e;since=+r.headers.get('X-Total')||since;const t=await r.text();if(t)add(t);
  st.textContent='live · buffer '+r.headers.get('X-Size')+' bytes'}catch(e){st.textContent='offline, retrying…'}setTimeout(poll,1500)}
+async function act(u){try{await fetch(u,{method:'POST'})}catch(e){}}
 poll();</script></body></html>)HTML";
 
 void LogPage::setup() {
@@ -54,6 +55,10 @@ void LogPage::setup() {
   httpd_uri_t raw{.uri = "/raw", .method = HTTP_GET, .handler = raw_, .user_ctx = this};
   httpd_register_uri_handler(this->server_, &page);
   httpd_register_uri_handler(this->server_, &raw);
+  httpd_uri_t clr{.uri = "/clear", .method = HTTP_POST, .handler = clear_, .user_ctx = this};
+  httpd_uri_t clrb{.uri = "/clear_ble", .method = HTTP_POST, .handler = clear_ble_, .user_ctx = this};
+  httpd_register_uri_handler(this->server_, &clr);
+  httpd_register_uri_handler(this->server_, &clrb);
   ESP_LOGI(TAG, "Log page on port %u, %u byte ring buffer", this->port_, (unsigned) this->size_);
 }
 
@@ -83,10 +88,84 @@ void LogPage::on_log_(uint8_t level, const char *tag, const char *msg, size_t le
     line[o++] = msg[i];
   }
   line[o++] = '\n';
+  if (this->quiet_ && is_ble_(line, o))
+    return;
   if (xSemaphoreTake(this->lock_, pdMS_TO_TICKS(5)) != pdTRUE)
     return;  // never stall a logging task
   this->put_(line, o);
   xSemaphoreGive(this->lock_);
+}
+
+// Bluetooth chatter: scanner, client, discovery and raw BMS frames.
+bool LogPage::is_ble_(const char *line, size_t n) {
+  static const char *const TAGS[] = {"][esp32_ble", "][ble_client", "][autodiscover", "][ant_bms_ble", "BT_", "BTU_TASK", "BTC_TASK"};
+  size_t lim = n < 80 ? n : 80;  // tag sits at the start of the line
+  for (const char *t : TAGS) {
+    size_t tl = strlen(t);
+    for (size_t i = 0; i + tl <= lim; i++)
+      if (memcmp(line + i, t, tl) == 0)
+        return true;
+  }
+  return false;
+}
+
+void LogPage::loop() {
+  if (!this->quiet_fn_)
+    return;
+  bool q = this->quiet_fn_();
+  if (q && !this->quiet_)
+    this->purge_ble_();
+  this->quiet_ = q;
+}
+
+// Rewrite the ring without Bluetooth lines (runs once, when quiet mode switches on).
+void LogPage::purge_ble_() {
+  char *tmp = (char *) heap_caps_malloc(this->size_, MALLOC_CAP_SPIRAM | MALLOC_CAP_8BIT);
+  if (tmp == nullptr)
+    return;
+  xSemaphoreTake(this->lock_, portMAX_DELAY);
+  size_t have = this->wrapped_ ? this->size_ : this->head_;
+  size_t start = this->wrapped_ ? this->head_ : 0;
+  size_t n = 0;
+  char line[512];
+  size_t lo = 0;
+  for (size_t i = 0; i < have; i++) {
+    char ch = this->buf_[(start + i) % this->size_];
+    if (lo < sizeof(line))
+      line[lo++] = ch;
+    if (ch == '\n') {
+      if (!is_ble_(line, lo)) {
+        memcpy(tmp + n, line, lo);
+        n += lo;
+      }
+      lo = 0;
+    }
+  }
+  memcpy(this->buf_, tmp, n);
+  this->head_ = n;
+  this->wrapped_ = false;
+  this->epoch_++;  // tells open log pages to clear and refetch
+  xSemaphoreGive(this->lock_);
+  free(tmp);
+  ESP_LOGI(TAG, "BMS connected: Bluetooth lines purged from the log (%u bytes kept)", (unsigned) n);
+}
+
+void LogPage::clear() {
+  xSemaphoreTake(this->lock_, portMAX_DELAY);
+  this->head_ = 0;
+  this->wrapped_ = false;
+  this->epoch_++;
+  xSemaphoreGive(this->lock_);
+}
+
+esp_err_t LogPage::clear_(httpd_req_t *req) {
+  static_cast<LogPage *>(req->user_ctx)->clear();
+  return httpd_resp_sendstr(req, "ok");
+}
+
+esp_err_t LogPage::clear_ble_(httpd_req_t *req) {
+  static_cast<LogPage *>(req->user_ctx)->purge_ble_();
+  return httpd_resp_sendstr(req, "ok");
 }
 
 esp_err_t LogPage::page_(httpd_req_t *req) {
@@ -130,6 +209,9 @@ esp_err_t LogPage::raw_(httpd_req_t *req) {
   char sz[16];
   snprintf(sz, sizeof(sz), "%u", (unsigned) self->size_);
   httpd_resp_set_hdr(req, "X-Size", sz);
+  char ep[12];
+  snprintf(ep, sizeof(ep), "%lu", (unsigned long) self->epoch_);
+  httpd_resp_set_hdr(req, "X-Epoch", ep);
   httpd_resp_set_hdr(req, "Cache-Control", "no-cache");
   httpd_resp_set_type(req, "text/plain; charset=utf-8");
   return httpd_resp_send(req, snap + off, n - off);

@@ -6,7 +6,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
 #dash{width:1024px;height:600px;background:var(--bg);display:grid;grid-template:1fr 90px/620px 1fr;position:relative;overflow:hidden;border:10px solid #000;border-radius:14px}
 .left{padding:22px 28px;display:flex;flex-direction:column;border-right:2px solid var(--line)}
 .top{display:flex;gap:26px;font-size:22px;color:var(--dim)}
-.rec{color:var(--bad)} .gps{color:var(--acc)}
+.rec{color:var(--bad);align-self:flex-start} .gps{color:var(--acc)}
 .speed{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .speed b{font-size:260px;line-height:.9;font-weight:800;font-variant-numeric:tabular-nums}
 .speed span{font-size:34px;color:var(--dim);letter-spacing:6px}
@@ -15,7 +15,8 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
 .row{display:flex;justify-content:space-between}
 .bar{height:22px;background:var(--line);border-radius:6px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc)}
-.net{margin-left:auto;font-size:17px;color:var(--dim);white-space:nowrap;align-self:center}.net .off{color:var(--bad);font-size:22px}
+.net{margin-left:auto;font-size:16px;line-height:1.25;color:var(--dim);white-space:nowrap;text-align:right;margin-top:-4px}.net .off{color:var(--bad);font-size:22px}
+.rst{align-self:flex-start;background:var(--line);color:var(--fg);border:0;border-radius:10px;font-size:20px;padding:10px 18px;cursor:pointer;transition:background .35s,color .35s}.rst.hit{background:#fff;color:#000;transition:none}
 .soc{font-size:54px;font-weight:700}
 .dim{color:var(--dim)} hr{border:0;border-top:2px solid var(--line);width:100%;margin:0}
 .media{grid-column:1/3;border-top:2px solid var(--line);display:flex;align-items:center;padding:0 28px;font-size:28px;gap:30px}
@@ -24,13 +25,14 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
 #alert b{font-size:170px} #alert span{font-size:40px}
 .ctl{display:flex;gap:18px;align-items:center;font-size:14px;color:#ccc;flex-wrap:wrap}
 .media button{border-radius:12px;padding:6px 18px;transition:background .35s,color .35s}
+#pp{width:2.2em;text-align:center;padding-left:0;padding-right:0}
 .media button.hit{background:#fff;color:#000;transition:none}
 </style></head><body>
 <div id="dash">
   <div class="left">
-    <div class="top"><span class="gps" id="gpsTag">GPS●<span id="sats">0</span></span><span>TRIP <span id="trip">0.0</span>mi</span><span class="rec" id="rec">●REC</span><span class="net" id="net"></span></div>
+    <div class="top"><span class="gps" id="gpsTag">GPS:<span id="sats">0</span></span><span>TRIP <span id="trip">0.0</span>mi</span><span class="rec" id="rec">REC</span><span class="net" id="net"></span></div>
     <div class="speed"><b id="spd">0</b><span>MPH</span></div>
-    <div class="bottom"><span id="clock"></span><span id="bmsTag">BMS●</span></div>
+    <div class="bottom"><span id="clock"></span><span id="bmsTag">BMS</span></div>
   </div>
   <div class="right">
     <div class="row"><span class="dim">SOC</span><span class="soc" id="soc">78%</span></div>
@@ -39,6 +41,7 @@ body{margin:0;background:#222;color:var(--fg);font-family:system-ui,sans-serif;d
     <div class="row"><span>TEMP <span id="temp">32</span>°C</span><span class="dim">cut@60</span></div>
     <div class="row"><span>RANGE</span><span id="range">M44 / H27 mi</span></div>
     <hr><div class="dim"><span id="ah">44.0</span> Ah remaining</div>
+    <button id="rst" class="rst">Restart board</button>
   </div>
   <div class="media"><span class="t rest" id="song"><span id="songIn">♪ no phone connected</span></span><button data-c="6">🔉</button><button data-c="4">⏮</button><button id="pp" data-c="2">⏯</button><button data-c="3">⏭</button><button data-c="5">🔊</button></div>
   <div id="alert"><b>TEMP <span id="atemp">52</span>°C</b><span>PACK OVERHEAT — EASE OFF</span></div>
@@ -88,13 +91,14 @@ function tick(){
   $('ah').textContent=f(AH,1);
   $('range').textContent=soc===null?'xx mi':Math.round(MAX_RANGE_MI*soc/100)+' mi'; // simple SOC scale until Stage 6 model
   $('alert').style.display=(temp!==null&&temp>=ALERT)?'flex':'none';
-  $('rec').style.visibility='hidden'; // SD logging not built yet
+  const rec=demo||(on&&live['binary_sensor/Log OK']===true); // green while the device log is running
+  $('rec').style.color=rec?'var(--acc)':'var(--bad)';
   const ph=on&&L['binary_sensor/Phone Connected']===true,ti=on?L['text_sensor/Track Title']:'',ar=on?L['text_sensor/Track Artist']:'';
   pill('phl',ph?'Phone: connected':'Phone: not paired',ph?'ok':'bad');
   setSong(ph?('♪ '+(ti||'nothing playing')+(ar?' — '+ar:'')):'♪ no phone connected');
   $('pp').textContent=(ph&&L['binary_sensor/Phone Playing']===true)?'⏸':'▶';
   const ip=on&&!demo?(live['text_sensor/IP Address']||''):'';
-  $('net').innerHTML=demo?'192.168.7.18 · dash :8080 · log :8081':ip&&ip!=='0.0.0.0'?`${ip} · dash :8080 · log :8081`:'<span class="off">📶✕ wifi</span>';
+  const ports='dash :8080 · log :8081';$('net').innerHTML=demo?`192.168.7.18<br>${ports}`:ip&&ip!=='0.0.0.0'?`${ip}<br>${ports}`:'<span class="off">wifi</span>';
   $('clock').textContent=new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}).toLowerCase().replace(' ','');
 }
 $('demo').onclick=()=>{demo=!demo;trip=0;dt=0;$('demo').textContent=demo?'Stop simulation':'Simulate data'};
@@ -112,5 +116,10 @@ function setSong(t){if(t===songTxt)return;songTxt=t;const box=$('song'),el=$('so
    songTimer=setTimeout(()=>{el.style.transform='translateX(0)';
     songTimer=setTimeout(()=>{box.classList.add('rest');songTimer=setTimeout(cycle,0)},dur*1000);},dur*1000+2000);},3000);};
  requestAnimationFrame(cycle);}
+$('rst').onclick=async()=>{const b=$('rst');b.classList.add('hit');setTimeout(()=>b.classList.remove('hit'),150);
+ if(!confirmArm){confirmArm=true;b.textContent='Tap again to restart';setTimeout(()=>{confirmArm=false;b.textContent='Restart board'},3000);return}
+ confirmArm=false;b.textContent='Restarting…';try{await fetch('/restart',{method:'POST'})}catch(e){}
+ setTimeout(()=>location.reload(),15000)};
+let confirmArm=false;
 setInterval(tick,250);tick();
 </script></body></html>

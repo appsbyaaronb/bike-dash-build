@@ -238,6 +238,9 @@ update:
 
 binary_sensor:
   - platform: template
+    name: Log OK
+    lambda: return id(logpg).is_ok();
+  - platform: template
     name: Phone Connected
     lambda: return id(phone).is_ready();
   - platform: template
@@ -291,5 +294,8 @@ dash_page:
 
 # Device log on its own port: http://192.168.7.18:8081/ (fixed 32 kB ring buffer in PSRAM).
 log_page:
+  id: logpg
   port: 8081
   buffer_size: 32kB
+  # Once the BMS is connected, Bluetooth chatter is purged and no longer logged.
+  quiet_ble_when: return id(bms_connected);
