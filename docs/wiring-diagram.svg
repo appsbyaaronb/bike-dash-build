@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900" role="img" aria-label="Bench wiring: 12 V supply feeds a Pololu 5 V buck and a PT4115 LED driver; the P4-NANO gets 5 V, drives the panel over a 22-pin FFC to a 22-pin breakout, six MIPI jumpers to a 40-pin breakout, and the Riverdi panel tail; RESET, 3.3 V and STBYB from the P4-NANO header; backlight LED+/LED- from the PT4115; GPS on 3.3 V and GPIO24/25.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900" role="img" aria-label="Bench wiring: 12 V supply feeds a Pololu 5 V buck and an LD24AJTA LED driver; the P4-NANO gets 5 V, drives the panel over a 22-pin FFC to a 22-pin breakout, six MIPI jumpers to a 40-pin breakout, and the Riverdi panel tail; RESET, 3.3 V and STBYB from the P4-NANO header; backlight LED+/LED- from the LD24AJTA; GPS on 3.3 V and GPIO24/25.">
   <defs>
     <g id="gnd" stroke="#222" stroke-width="2" fill="none">
       <line x1="0" y1="0" x2="0" y2="8"/>
@@ -33,16 +33,16 @@
   <text x="214" y="254" text-anchor="end">VOUT 5 V</text>
   <text x="140" y="305" font-size="10" text-anchor="middle" fill="#555">EN pin: tie to ignition later</text>
 
-  <!-- ===== PT4115 ===== -->
+  <!-- ===== LED driver (eletechsup LD24AJTA) ===== -->
   <rect x="60" y="380" width="160" height="180" rx="6" fill="#f4f4f4" stroke="#222" stroke-width="1.5"/>
-  <text x="140" y="402" font-size="14" font-weight="bold" text-anchor="middle">PT4115 LED driver</text>
-  <text x="140" y="420" font-size="11" text-anchor="middle">constant current, PWM dim</text>
-  <text x="140" y="436" font-size="11" text-anchor="middle" fill="#b00">check Rs = 0.33–0.39 Ω FIRST</text>
-  <text x="66" y="454">IN+</text>
-  <text x="66" y="484">IN−</text>
+  <text x="140" y="402" font-size="14" font-weight="bold" text-anchor="middle">LD24AJTA LED driver</text>
+  <text x="140" y="420" font-size="11" text-anchor="middle">eletechsup, 30–900 mA, pot-set</text>
+  <text x="140" y="436" font-size="11" text-anchor="middle" fill="#b00">set 0.27 A on meter FIRST</text>
+  <text x="66" y="454">VIN</text>
+  <text x="66" y="484">GND</text>
   <line x1="60" y1="480" x2="45" y2="480" stroke="#222" stroke-width="2"/>
   <use href="#gnd" x="45" y="480"/>
-  <text x="214" y="474" text-anchor="end">DIM / PWM</text>
+  <text x="214" y="474" text-anchor="end">PWM</text>
   <text x="214" y="514" text-anchor="end">LED+</text>
   <text x="214" y="544" text-anchor="end">LED−</text>
 
@@ -67,8 +67,8 @@
   <!-- LED+ / LED- to 40P breakout, routed under everything -->
   <polyline points="220,510 360,510 360,840 1000,840 1000,600 1040,600" fill="none" stroke="#e6550d" stroke-width="2.5"/>
   <polyline points="220,540 340,540 340,860 1010,860 1010,560 1040,560" fill="none" stroke="#444" stroke-width="2.5" stroke-dasharray="8 4"/>
-  <text x="680" y="834" font-size="11" fill="#e6550d" text-anchor="middle">LED+  (backlight, 9.6 V / 270 mA, from PT4115)</text>
-  <text x="680" y="876" font-size="11" fill="#444" text-anchor="middle">LED−  (backlight return to PT4115, NOT to ground)</text>
+  <text x="680" y="834" font-size="11" fill="#e6550d" text-anchor="middle">LED+  (backlight, 9.6 V / 270 mA, from LD24AJTA)</text>
+  <text x="680" y="876" font-size="11" fill="#444" text-anchor="middle">LED−  (backlight return to driver, NOT to ground)</text>
 
   <!-- ===== P4-NANO ===== -->
   <rect x="430" y="140" width="280" height="480" rx="8" fill="#eef3fb" stroke="#222" stroke-width="1.5"/>

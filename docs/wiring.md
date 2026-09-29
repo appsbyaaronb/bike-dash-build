@@ -17,14 +17,14 @@ Same thing as text, for when the picture is too small on a phone:
      ignition 12 V)                                    |  GPIO27 (reset)  GPIO26 (dim)  3V3  GND        |
          |                                             |     |               |          |    |           v
          |       +---------------------+               |     |               |          |    |     [40P breakout] <--panel tail-- Riverdi 7" panel
-         +------>| PT4115 LED driver   |---LED+ / LED- ------------------------------------------------> pins 39/40 and 31/32
+         +------>| LD24AJTA LED driver |---LED+ / LED- ------------------------------------------------> pins 39/40 and 31/32
                  | (12 V in, 270 mA CC)|<-- DIM from GPIO26
                  +---------------------+
 ```
 
 Three groups of wires:
-1. **Power**: 12 V to the Pololu and the PT4115; 5 V from the Pololu to the P4-NANO; 3.3 V from the P4-NANO to the panel; one shared ground.
-2. **Control**: panel RESET from GPIO27, PT4115 DIM from GPIO26, panel STBYB tied to 3.3 V.
+1. **Power**: 12 V to the Pololu and the LED driver; 5 V from the Pololu to the P4-NANO; 3.3 V from the P4-NANO to the panel; one shared ground.
+2. **Control**: panel RESET from GPIO27, LED driver PWM from GPIO26, panel STBYB tied to 3.3 V.
 3. **Video**: six MIPI wires (three pairs) from the P4-NANO's DSI connector to the panel. These are the only fussy ones.
 
 ## Tools
@@ -37,20 +37,19 @@ Multimeter, small flat screwdriver for the terminal blocks, wire strippers, a pa
 2. Flash `esphome/bike-dash-p4nano.yaml` with the `display:` block commented out.
 3. Confirm the log shows the C6 radio coming up and Wi-Fi connecting. If this does not work, nothing else matters yet.
 
-## Step 1. Check the PT4115 module before it ever touches the panel
+## Step 1. Set the LED driver current before it ever touches the panel
 
-The module sets its current with a resistor marked something like `R100`, `R150`, `R200`, `R330`, `R390`. Find it (a small black rectangle next to the big chip). Current = 0.1 V / resistance:
+The backlight driver is an eletechsup LD24AJTA (AliExpress, "DC 6-24V 30-900mA Adjustable LED Driver"). Its current is set by a small pot, up to a ceiling of 0.1 V / RCS (the board's sense resistor). It can reach 900 mA, which will destroy the backlight, so it is set on a meter first. The pads are bare: solder six wires (VIN, GND, LED+, LED-, PWM, GND).
 
-| Marking | Ohms | Current | OK for this panel? |
-|---|---|---|---|
-| R330 | 0.33 | 300 mA | Yes (max is 315) |
-| R390 | 0.39 | 256 mA | Yes (a touch dim, fine) |
-| R100 | 0.10 | 1000 mA | **NO. Will destroy the backlight.** |
-| R150 / R200 | 0.15 / 0.20 | 670 / 500 mA | **NO** |
+1. Meter: red probe in the **10A** jack, dial on 10A DC. The mA jack is often fused at 200 mA.
+2. Turn the pot fully toward **decrease** (arrows are printed next to it).
+3. 12 V to VIN / GND. Red probe on **LED+**, black on **LED-**, nothing else on the output. PWM open (floating = full on).
+4. Power on. Turn the pot slowly toward increase until the meter reads **0.27 A** (panel: 270 mA typ, 315 mA max).
+5. Power off, remove the meter. The setting holds whatever the load is.
 
-If all three modules are above 315 mA, do not use them. Buy a module marked R330/R390, or replace the resistor. Do not guess.
+If it stops rising around 0.10 A, RCS is too big (1 ohm = 100 mA ceiling); it needs 0.33 ohm or less.
 
-Then test the driver on its own: connect 12 V to Vin+/Vin-, put the multimeter on the **LED output in current mode (mA)** between LED+ and LED-. It should read roughly the number in the table. Disconnect.
+The old PT4115 modules (Amazon 3-pack) came with a 1R0 sense resistor = 100 mA, about 37 % brightness. Usable for a dim bench test only.
 
 ## Step 2. Power wiring
 
@@ -60,14 +59,14 @@ All terminal blocks: strip 6 mm, insert, tighten, tug-test.
 |---|---|---|
 | 12 V supply + | Pololu **VIN** | red |
 | 12 V supply - | Pololu **GND** | black |
-| 12 V supply + | PT4115 **VIN+** (or "IN+") | red |
-| 12 V supply - | PT4115 **VIN-** (or "IN-") | black |
+| 12 V supply + | LED driver **VIN** | red |
+| 12 V supply - | LED driver **GND** | black |
 | Pololu **VOUT** (5 V) | P4-NANO header pin labelled **5V** | red |
 | Pololu **GND** | P4-NANO header pin labelled **GND** | black |
 
 Check with the meter before going on: Pololu VOUT to GND reads **4.9-5.1 V**. If it reads 12 V you wired VIN and VOUT backwards. Power off.
 
-On the bench you can skip the Pololu and just use USB-C for the P4-NANO. You still need 12 V for the PT4115.
+On the bench you can skip the Pololu and just use USB-C for the P4-NANO. You still need 12 V for the LED driver.
 
 ## Step 3. Panel side: the 40-pin breakout
 
@@ -83,8 +82,8 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 | 5 | RESET | P4-NANO header **GPIO27** | yellow |
 | 6 | STBYB | P4-NANO header **3V3** (same 3.3 V as above) | red |
 | 7, 10, 13, 16, 19 | GND | P4-NANO header **GND** (at least two of them; the more the better) | black |
-| 31 **and** 32 | LED- | PT4115 **LED-** | black |
-| 39 **and** 40 | LED+ | PT4115 **LED+** | red |
+| 31 **and** 32 | LED- | LED driver **LED-** | black |
+| 39 **and** 40 | LED+ | LED driver **LED+** | red |
 | 8 | D0N | 22-pin breakout, DSI **D0-** (Step 4) | pair 1 |
 | 9 | D0P | 22-pin breakout, DSI **D0+** | pair 1 |
 | 11 | D1N | 22-pin breakout, DSI **D1-** | pair 2 |
@@ -94,7 +93,7 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 | 1, 4, 14, 15, 20, 21, 33-38 | NC / lanes 2-3 | **nothing** | |
 | 22-30 | GND / NC / scan direction | leave as the datasheet table says (GND pins to GND, NC open). If the image comes up mirrored later, the U/D and L/R pins here flip it. | |
 
-PT4115 DIM: one jumper from PT4115 **DIM** (may be labelled PWM) to P4-NANO header **GPIO26**.
+LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26**.
 
 ## Step 4. Video side: the 22-pin breakout on the P4-NANO
 
@@ -167,18 +166,18 @@ Test: with the dash running, the log prints satellites, speed and course from th
 ## Step 5. Power-on order and first test
 
 1. Meter check, power off: panel pin 2 to any GND must **not** be a short. Panel pin 39 to pin 31 must not be a short.
-2. Power the 12 V supply. PT4115 LED output is now live but nothing is drawn yet (it is fine; it is a current source, open circuit is safe).
+2. Power the 12 V supply. LED driver output is now live but nothing is drawn yet (it is fine; it is a current source, open circuit is safe).
 3. Plug USB-C into the P4-NANO (or turn on the Pololu 5 V).
 4. Flash the config **with** the `display:` block. Expect: backlight comes on (Stage 1), screen shows green with a grey box.
 
 | Symptom | Check |
 |---|---|
-| Backlight off | GPIO26 jumper; DIM floating should mean full on, so if it is still off the PT4115 has no 12 V or LED+/- are swapped |
+| Backlight off | GPIO26 jumper; DIM floating should mean full on, so if it is still off the LED driver has no 12 V or LED+/- are swapped |
 | Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB tied to 3.3 V; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md |
 | Log shows DSI errors | A pair swapped, or a pair to the wrong lane; try swapping + and - of one pair, then lanes 0 and 1 |
 | Scrambled or rolling picture | `lane_bit_rate` (try 800 or 1000 Mbps), then `pclk_frequency` |
 | Picture mirrored | scan-direction pins 22-30 on the panel |
-| Panel gets hot | stop; check the PT4115 current (Step 1) |
+| Panel gets hot | stop; check the LED driver current (Step 1) |
 
 ## Step 6. Bike install (later)
 

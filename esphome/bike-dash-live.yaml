@@ -1,6 +1,6 @@
 # bike-dash on Waveshare ESP32-P4-NANO + Riverdi RVT70HSMNWC00-B (7" 1024x600, 850 nit)
 # Stage 0/1 bring-up config. Validate with `esphome config` first.
-# Pins follow docs/wiring.md: panel RESET on GPIO27, PT4115 DIM on GPIO26 (P4-NANO BSP defaults).
+# Pins follow docs/wiring.md: panel RESET on GPIO27, LED driver PWM on GPIO26 (P4-NANO BSP defaults).
 
 substitutions:
   bms_name_prefix: "ANT-BLE"
@@ -151,7 +151,7 @@ time:
 #       - lambda: |-
 #           id(gps_uart).set_baud_rate(115200); id(gps_uart).load_settings();
 
-# Backlight: LEDC PWM into the PT4115 DIM pin. About 5 kHz so it is not visible.
+# Backlight: LEDC PWM into the LED driver PWM pin. About 5 kHz so it is not visible.
 output:
   - platform: ledc
     id: backlight_pwm

@@ -20,7 +20,7 @@ Cost is not a factor. Performance and start-up time are.
 | Why not the Waveshare ESP32-P4-7B we started on | Its panel is **350 nits, 0-60 C**. Every ESP32-P4 all-in-one board on the market (Waveshare, Guition, Elecrow) is an indoor panel. A bike dash in direct sun needs about 1000 nits. |
 | Screen | **Riverdi RVT70HSMNWC00-B**: 7" 1024x600 IPS, **850 cd/m2**, optically bonded PCAP touch, anti-glare, **-20 to 70 C**, glove and wet-screen touch. Controller EK79007 (same family as Espressif's own dev panel), runs 2-lane. |
 | Board | **Waveshare ESP32-P4-NANO** (P4 + onboard C6, 32 MB PSRAM, 16 MB flash, microSD, 22-pin 2-lane DSI). |
-| Glue | Two FPC breakouts for the bench, a PT4115 constant-current driver for the 9.6 V / 270 mA backlight, a Pololu 5 V buck off the bike's 12 V. A small carrier PCB replaces the breakouts for the on-bike install. |
+| Glue | Two FPC breakouts for the bench, an eletechsup LD24AJTA constant-current driver (pot-set) for the 9.6 V / 270 mA backlight, a Pololu 5 V buck off the bike's 12 V. A small carrier PCB replaces the breakouts for the on-bike install. |
 
 ## Bench wiring at a glance
 

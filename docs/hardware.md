@@ -96,11 +96,13 @@ Wiki: https://www.waveshare.com/wiki/ESP32-P4-Nano-StartPage . Schematic: https:
 | Storage | microSD, SDIO 3.0 |
 | ESPHome presets that exist for this board | `WAVESHARE-P4-NANO-10.1` (their 10.1" DSI panel); copy only the board-level bits |
 
-## PT4115 backlight driver module
+## Backlight driver: eletechsup LD24AJTA
 
-- Buck topology: Vin must be above the LED string (9.6 V) plus about 1 V. 12 V is fine. 5 V is not.
-- Output current is fixed by the module's sense resistor: **I = 0.1 V / Rs**. Target 270 mA, so Rs about 0.37 ohm. 0.33 ohm gives about 300 mA (under the 315 mA max), 0.39 ohm gives about 256 mA. **Read the resistor on the module before connecting the panel** (see wiring.md step 3). Three modules were bought so one can be modified.
-- DIM pin: PWM 100 Hz-20 kHz from a P4 GPIO, 3.3 V logic is enough. Left floating = full on. Use about 5 kHz so it is not visible.
+- Buck constant-current, 6-24 V in, 30-900 mA set by a pot. Ceiling is 0.1 V / RCS. Ordered 2026-09-28 from AliExpress ($1.15).
+- Set to **270 mA** on a meter before connecting the panel (wiring.md step 1). Bare pads: VIN, GND, LED+, LED-, PWM, GND.
+- Buck topology: Vin must be above the LED string (9.6 V) plus headroom. 12 V is fine. 5 V is not. Headroom not in the listing; check brightness on the bench at 12 V.
+- PWM pad: 100 Hz-20 kHz per the listing. The LEDC output on GPIO26 runs about 5 kHz.
+- Replaces the PT4115 modules: those arrived with a 1R0 sense resistor (100 mA, about 37 % brightness). Getting 270 mA from them needs a 0.36-0.39 ohm 1206 resistor swap (DigiKey RL1206FR-070R36L).
 
 ## Pololu D36V28F5
 

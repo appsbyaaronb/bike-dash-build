@@ -10,7 +10,8 @@ Ordered 2026-09-18 unless noted. Prices are what was on screen that day.
 | 2 | Waveshare ESP32-P4-NANO (bare board) | Amazon | $28.79 | [search, first result](https://www.amazon.com/s?k=Waveshare+ESP32-P4-NANO) | ordered 2026-09-18 |
 | 3 | MECCANIXITY 40-pin 0.5 mm FPC breakout, 2-pack (panel side) | Amazon | $7.99 | [B09VPHW2QY](https://www.amazon.com/MECCANIXITY-Converter-Socket-2-54mm-Printer/dp/B09VPHW2QY) | ordered 2026-09-18 |
 | 4 | MECCANIXITY 22-pin 0.5 mm FPC breakout, 2-pack (P4-NANO DSI side) | Amazon | $9.39 | [B09VPKWL1G](https://www.amazon.com/MECCANIXITY-Converter-2-54mm-Single-Printer/dp/B09VPKWL1G) | ordered 2026-09-18 |
-| 5 | PT4115 constant-current LED driver module, 3-pack (backlight) | Amazon | $7.99 | [B0FR1SGWKM](https://www.amazon.com/PT4115-Constant-Current-Dimming-Step-Down/dp/B0FR1SGWKM) | ordered 2026-09-18 |
+| 5 | PT4115 constant-current LED driver module, 3-pack (backlight) | Amazon | $7.99 | [B0FR1SGWKM](https://www.amazon.com/PT4115-Constant-Current-Dimming-Step-Down/dp/B0FR1SGWKM) | arrived 2026-09-28 with 1R0 (100 mA); replaced by 5b |
+| 5b | eletechsup LD24AJTA adjustable CC LED driver, 30-900 mA, PWM (backlight, set to 270 mA) | AliExpress (eletechsup Outlet Store) | $1.15 | [4000340845096](https://www.aliexpress.com/item/4000340845096.html) | ordered 2026-09-28, due Oct 04-09 |
 | 6 | Pololu D36V28F5 5 V 3.2 A buck, 5.3-50 V in (bike 12 V to 5 V) | Amazon | $16.99 | [B0BJKVWR2D](https://www.amazon.com/Pololu-3-2A-Step-Down-Voltage-Regulator/dp/B0BJKVWR2D) | ordered 2026-09-18 |
 | 7 | **SparkFun GPS Breakout NEO-M9N, chip antenna (Qwiic)**: genuine u-blox M9, 25 Hz max, UART pins + I2C, **3.3 V supply and logic**, rechargeable backup battery keeps settings and gives a hot fix | Amazon | $74.95 | [B082YG1PXF](https://www.amazon.com/SparkFun-Breakout-Breadboardable-time-First-f/dp/B082YG1PXF) (Prime) | ordered 2026-09-18 |
 | 8 | USB-to-TTL serial adapter, 3.3 V (for the one-time 10 Hz / 115200 setup in u-center) | Amazon | about $8 | any CP2102 or FT232 board with a 3.3 V switch | ordered 2026-09-18 |
@@ -27,7 +28,7 @@ GPS notes: it is the speed source for the dash (speed and trip come from GPS, no
 | Dupont jumper wires, female-female, 100 mm, one pack | Breakout to breakout, breakout to NANO header | Keep the six DSI wires **the same length and bundled together** |
 | Screw terminal or small perfboard | To join grounds and 12 V feeds neatly | |
 | 12 V bench supply, 2 A | Backlight + buck | A 12 V wall adapter with a barrel jack pigtail is fine |
-| Multimeter | Checking the PT4115 sense resistor and the 5 V rail before connecting the panel | |
+| Multimeter | Setting the LED driver to 270 mA (10A jack) and the 5 V rail before connecting the panel | |
 
 ## Still to source (on-bike)
 
