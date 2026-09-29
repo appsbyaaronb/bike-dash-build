@@ -8,6 +8,8 @@ substitutions:
   backlight_pwm_pin: GPIO26
   gps_tx_pin: GPIO24   # P4 TX -> GPS RX. header P1 pin 18 (schematic-confirmed)
   gps_rx_pin: GPIO25   # P4 RX <- GPS TX
+  touch_int_pin: GPIO22    # touch tail pin 9, header P1 pin 16 (ILI2132A, driver not written yet)
+  touch_reset_pin: GPIO23  # touch tail pin 7, header P1 pin 7
 
 esphome:
   name: ${name}
@@ -53,6 +55,7 @@ i2c:
   sda: GPIO7
   scl: GPIO8
   frequency: 400kHz
+  scan: true   # touch ILI2132A should show at 0x41
 
 # GPS: u-blox M8/M10 on a UART. Module must be set to 10 Hz / 115200 (docs/wiring.md Step 4b).
 uart:
