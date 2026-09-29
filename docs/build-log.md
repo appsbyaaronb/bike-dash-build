@@ -26,3 +26,11 @@
 - iPhone remote (`components/ams`): Apple Media Service client, control only like the old Rockford PMX-BTUR (no audio to the dash). Lessons: let the phone start pairing (both sides starting it gave a DHKey mismatch), look up the CCCDs instead of assuming handle+1, and subscribe to the Remote Command characteristic or iOS ignores the commands.
 - Dash page (`components/dash_page`, `dash.html`) served from the board at `http://192.168.7.18:8080/`. It reads live data from `/events` on :80 and sends media buttons to `POST /cmd?c=N` on :8080. Sending them straight to :80 from the page did nothing. It has a Simulate data demo mode.
 - Range is a placeholder (60 mi full charge x SOC). Speed shows 0 until the NEO-M9N is wired.
+- Later the same day:
+  - The log page moved to its own port, `:8081`. It uses a fixed 32 kB ring buffer in PSRAM, so it can't grow. It has Clear log and Clear Bluetooth buttons. Once the BMS connects, Bluetooth lines are purged and no longer logged (`quiet_ble_when`).
+  - Phone dash on `:8082`, laid out for a 19.5:9 screen and scaled to the window. JS shrinks the content until no section overflows. Brave on iOS kept serving a cached old page, so reload if a change doesn't show.
+  - `dash_page` takes a list of pages, and each page gets its own port and httpd control port. `LWIP_MAX_SOCKETS` is now 32: with 13, the three and then four HTTP servers plus the browsers' open data connections stopped every port answering.
+  - Dash buttons: Restart board (tap twice) and Restart Bluetooth (BLE off 2 s, then on, and BMS discovery resets). The AMS component re-registers after a BLE restart. Before that fix it left a stale link (`ESP_ERR_INVALID_STATE`).
+  - Status words are coloured red or green with no dots: `GPS:<sats>`, `BMS`, `REC` (green while the log runs), and `wifi` when there's no IP. The IP and ports are on two lines, top right of the speed panel.
+  - Second Wi-Fi network: the iPhone hotspot `aaron` (DHCP, needs Maximize Compatibility). `IoT2.4` keeps priority and the fixed .18.
+  - The BMS stopped advertising late in the day. Neither the board nor the PC could see it, even after a power cycle. Suspect range or another connection holding it. Not resolved.
