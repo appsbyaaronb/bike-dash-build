@@ -35,3 +35,4 @@
   - Second Wi-Fi network: the iPhone hotspot `aaron` (DHCP, needs Maximize Compatibility). `IoT2.4` keeps priority and the fixed .18.
   - The BMS stopped advertising late in the day. Neither the board nor the PC could see it, even after a power cycle. Suspect range or another connection holding it. Not resolved.
 - Backlight driver change: the PT4115 modules have a 1R0 sense resistor (100 mA, about 37 % brightness). Ordered an eletechsup LD24AJTA (AliExpress, $1.15, due Oct 04-09): current set by a pot to 270 mA on a meter first. Bare pads, six wires. Diagram, wiring.md, hardware.md and BOM updated.
+- GPS UART moved from GPIO24/25 (USB-Serial-JTAG pins, ESPHome warned) to GPIO20 TX / GPIO21 RX, header P1 pins 13/15. Configs, diagram, wiring.md, hardware.md, layout updated.

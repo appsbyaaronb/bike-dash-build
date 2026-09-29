@@ -6,8 +6,8 @@ substitutions:
   name: bike-dash
   lcd_reset_pin: GPIO27
   backlight_pwm_pin: GPIO26
-  gps_tx_pin: GPIO24   # P4 TX -> GPS RX. header P1 pin 18 (schematic-confirmed)
-  gps_rx_pin: GPIO25   # P4 RX <- GPS TX
+  gps_tx_pin: GPIO20   # P4 TX -> GPS RX. header P1 pin 13 (24/25 are the USB-Serial-JTAG pins)
+  gps_rx_pin: GPIO21   # P4 RX <- GPS TX. header P1 pin 15
   touch_int_pin: GPIO22    # touch tail pin 9, header P1 pin 16 (ILI2132A, driver not written yet)
   touch_reset_pin: GPIO23  # touch tail pin 7, header P1 pin 7
 

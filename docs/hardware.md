@@ -105,10 +105,10 @@ Header **P1** (2x13, 2.54 mm), from the schematic. Every pin this build uses is 
 | 7 | GPIO23 | touch RST | | 8 | GPIO37 | |
 | 9 | GND | | | 10 | GPIO38 | |
 | 11 | GPIO5 | | | 12 | GPIO4 | |
-| 13 | GPIO20 | | | 14 | GND | |
-| 15 | GPIO21 | | | 16 | GPIO22 | touch INT |
-| 17 | 3V3 | | | 18 | GPIO24 | GPS UART TX (P4 → GPS RX) |
-| 19 | GPIO25 | GPS UART RX (GPS TX → P4) | | 20 | GND | |
+| 13 | GPIO20 | GPS UART TX (P4 → GPS RX) | | 14 | GND | |
+| 15 | GPIO21 | GPS UART RX (GPS TX → P4) | | 16 | GPIO22 | touch INT |
+| 17 | 3V3 | | | 18 | GPIO24 | USB-Serial-JTAG D−, left free |
+| 19 | GPIO25 | USB-Serial-JTAG D+, left free | | 20 | GND | |
 | 21 | GPIO26 | backlight PWM | | 22 | GPIO27 | panel RESET |
 | 23 | GPIO32 | | | 24 | GPIO33 | |
 | 25 | GND | | | 26 | GPIO36 | |

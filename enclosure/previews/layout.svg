@@ -69,7 +69,7 @@
 <line x1="70" y1="745.32" x2="100" y2="745.32" stroke="#ff7f0e" stroke-width="3"/><text x="108" y="749.32" font-size="12">5 V Pololu → NANO 5V</text>
 <line x1="70" y1="765.32" x2="100" y2="765.32" stroke="#6f42c1" stroke-width="3"/><text x="108" y="769.32" font-size="12">FFC NANO → 22P (dashed); 6 MIPI jumpers 22P → 40P</text>
 <line x1="70" y1="785.32" x2="100" y2="785.32" stroke="#e6550d" stroke-width="3"/><text x="108" y="789.32" font-size="12">LED+/LED− driver → 40P pins 39/40, 31/32</text>
-<line x1="70" y1="805.32" x2="100" y2="805.32" stroke="#c51b8a" stroke-width="3"/><text x="108" y="809.32" font-size="12">GPS 3V3 / GND / TX / RX → NANO header (GPIO24/25)</text>
+<line x1="70" y1="805.32" x2="100" y2="805.32" stroke="#c51b8a" stroke-width="3"/><text x="108" y="809.32" font-size="12">GPS 3V3 / GND / TX / RX → NANO header (GPIO20/21)</text>
 <line x1="70" y1="825.32" x2="100" y2="825.32" stroke="#17becf" stroke-width="3"/><text x="108" y="829.32" font-size="12">Touch: 10P → NANO GPIO7/8/22/23 + 3V3. Dashed: touch board on panel back (approx.)</text>
 <text x="70" y="853.32" font-size="12"><tspan font-weight="bold">Grey circles</tspan>: bezel screws (M3) and AMPS bosses. White: board screws. Positions from bike-dash-enclosure.scad;</text>
 <text x="70" y="871.32" font-size="12">pad sizes for the LED driver and breakouts are still VERIFY (measure the parts). Wire routes are suggestions.</text>

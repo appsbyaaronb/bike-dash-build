@@ -127,7 +127,7 @@ Rules for the six video jumpers:
 
 ## Step 4b. GPS (speed source)
 
-The P4-NANO has no dedicated GPS header; any two free header GPIOs become a UART. The config uses **GPIO24 = P4 TX, GPIO25 = P4 RX** (change the `gps_tx_pin` / `gps_rx_pin` substitutions if those are taken on the silkscreen).
+The P4-NANO has no dedicated GPS header; any two free header GPIOs become a UART. The config uses **GPIO20 = P4 TX (P1 pin 13), GPIO21 = P4 RX (P1 pin 15)** (change the `gps_tx_pin` / `gps_rx_pin` substitutions if those are taken on the silkscreen).
 
 Four wires. TX goes to RX and RX goes to TX; that is the one everybody gets backwards.
 
@@ -135,8 +135,8 @@ Four wires. TX goes to RX and RX goes to TX; that is the one everybody gets back
 |---|---|---|
 | **3V3** | P4-NANO header **3V3**. **Not 5V: this board is 3.3 V only and 5 V will kill it.** | red |
 | GND | P4-NANO header **GND** | black |
-| TX (GPS talks) | P4-NANO header **GPIO25** (P4 RX) | green |
-| RX (GPS listens) | P4-NANO header **GPIO24** (P4 TX) | white |
+| TX (GPS talks) | P4-NANO header **GPIO21** (P1 pin 15, P4 RX) | green |
+| RX (GPS listens) | P4-NANO header **GPIO20** (P1 pin 13, P4 TX) | white |
 
 (If the Matek M9N-5883 was bought instead: its 5V pin goes to the header **5V**, and its RX/TX pins wire the same way. Its UART is 3.3 V logic too.)
 
