@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 919 873" width="919" height="873" font-family="DejaVu Sans, Arial, sans-serif">
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="70" y="34" font-size="20" font-weight="bold">bike-dash enclosure: what goes where</text>
+<text x="70" y="56" font-size="13" fill="#444">Shell, looking in from the panel side (bezel + panel removed). Top of drawing = top of the dash.</text>
+<rect x="70.0" y="150.0" width="779.3520000000001" height="523.32" rx="25.200000000000003" fill="#d9d9d9" stroke="#222" stroke-width="2"/>
+<rect x="80.5" y="160.50000000000003" width="758.3520000000001" height="502.32" rx="14.700000000000001" fill="#f7f7f7" stroke="#888"/>
+<rect x="181.1" y="74.4" width="221.1" height="75.6" rx="4" fill="#fde0dd" stroke="#c51b8a" stroke-width="2"/>
+<text x="291.7" y="108.2" text-anchor="middle" font-size="14" font-weight="bold">GPS cap (outside, top edge)</text>
+<text x="291.7" y="126.2" text-anchor="middle" font-size="11" fill="#444">NEO-M9N lies flat inside</text>
+<rect x="168.5" y="160.5" width="246.3" height="29.4" rx="4" fill="#fbe9e7" stroke="#c51b8a" stroke-width="2"/>
+<text x="291.67600000000004" y="179.20000000000002" text-anchor="middle" font-size="10" fill="#c51b8a">insert pad + wire slot</text>
+<rect x="667.576" y="148.0" width="46.2" height="14.5" fill="#1f77b4"/>
+<text x="690.676" y="142.0" text-anchor="middle" font-size="11" fill="#1f77b4">USB-C cutout (flashing)</text>
+<rect x="172.39600000000002" y="671.32" width="53.760000000000005" height="14.5" fill="#d62728"/>
+<text x="199.276" y="695.32" text-anchor="middle" font-size="11" fill="#d62728">PG7 gland: 12 V in (bottom wall)</text>
+<text x="459.67600000000004" y="695.32" text-anchor="middle" font-size="11" fill="#6f42c1">panel tail comes in here (from the front)</text>
+<polyline points="199.3,664.9 199.3,487.3 106.9,487.3 106.9,277.3 161.5,277.3" fill="none" stroke="#d62728" stroke-width="3" stroke-linejoin="round" />
+<polyline points="106.9,411.7 136.3,411.7" fill="none" stroke="#d62728" stroke-width="3" stroke-linejoin="round" />
+<polyline points="237.1,277.3 274.9,277.3 274.9,210.1 585.7,210.1" fill="none" stroke="#ff7f0e" stroke-width="3" stroke-linejoin="round" />
+<polyline points="541.6,411.7 560.5,411.7 560.5,327.7 585.7,327.7" fill="none" stroke="#6f42c1" stroke-width="3" stroke-linejoin="round" stroke-dasharray="8 4"/>
+<polyline points="447.1,466.3 447.1,533.5" fill="none" stroke="#6f42c1" stroke-width="3" stroke-linejoin="round" />
+<polyline points="262.3,432.7 312.7,432.7 312.7,554.5 346.3,554.5" fill="none" stroke="#e6550d" stroke-width="3" stroke-linejoin="round" />
+<polyline points="333.7,189.9 333.7,243.7 585.7,243.7" fill="none" stroke="#c51b8a" stroke-width="3" stroke-linejoin="round" stroke-dasharray="3 3"/>
+<circle cx="106.87600000000003" cy="411.66" r="4" fill="#d62728"/>
+<rect x="585.7" y="163.9" width="210.0" height="210.0" rx="4" fill="#e8e8e8" stroke="#222" stroke-width="2"/>
+<text x="690.7" y="264.9" text-anchor="middle" font-size="14" font-weight="bold">ESP32-P4-NANO</text>
+<text x="690.7" y="282.9" text-anchor="middle" font-size="11" fill="#444">4 standoffs, M2.5</text>
+<text x="690.7" y="295.9" text-anchor="middle" font-size="11" fill="#444">RJ45 up (13.5 mm tall)</text>
+<text x="690.7" y="308.9" text-anchor="middle" font-size="11" fill="#444">USB-C at the top wall</text>
+<circle cx="596.0" cy="363.5" r="12.6" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<circle cx="596.0" cy="174.2" r="12.6" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<circle cx="785.4" cy="363.5" r="12.6" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<circle cx="785.4" cy="174.2" r="12.6" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<rect x="161.9" y="234.6" width="74.8" height="85.3" rx="4" fill="#e5f5e0" stroke="#2ca02c" stroke-width="2"/>
+<text x="199.3" y="273.3" text-anchor="middle" font-size="14" font-weight="bold">Pololu</text>
+<text x="199.3" y="291.3" text-anchor="middle" font-size="11" fill="#444">5 V buck</text>
+<circle cx="167.3" cy="306.7" r="8.4" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<circle cx="231.3" cy="306.7" r="8.4" fill="#fff" stroke="#222" stroke-width="1.5"/>
+<rect x="136.3" y="369.7" width="126.0" height="84.0" rx="4" fill="#deebf7" stroke="#1f77b4" stroke-width="2"/>
+<text x="199.3" y="407.7" text-anchor="middle" font-size="14" font-weight="bold">LD24AJTA</text>
+<text x="199.3" y="425.7" text-anchor="middle" font-size="11" fill="#444">LED driver</text>
+<text x="199.3" y="438.7" text-anchor="middle" font-size="11" fill="#444">adhesive pad</text>
+<rect x="419.8" y="357.1" width="121.8" height="109.2" rx="4" fill="#efe6fb" stroke="#6f42c1" stroke-width="2"/>
+<text x="480.7" y="407.7" text-anchor="middle" font-size="14" font-weight="bold">22P breakout</text>
+<text x="480.7" y="425.7" text-anchor="middle" font-size="11" fill="#444">adhesive pad</text>
+<rect x="346.3" y="533.5" width="226.8" height="109.2" rx="4" fill="#efe6fb" stroke="#6f42c1" stroke-width="2"/>
+<text x="459.7" y="584.1" text-anchor="middle" font-size="14" font-weight="bold">40P breakout</text>
+<text x="459.7" y="602.1" text-anchor="middle" font-size="11" fill="#444">adhesive pad</text>
+<text x="459.7" y="615.1" text-anchor="middle" font-size="11" fill="#444">under the tail</text>
+<circle cx="396.7" cy="491.5" r="21.0" fill="#bbb" stroke="#222" stroke-width="1.5"/>
+<circle cx="396.7" cy="331.9" r="21.0" fill="#bbb" stroke="#222" stroke-width="1.5"/>
+<circle cx="522.7" cy="491.5" r="21.0" fill="#bbb" stroke="#222" stroke-width="1.5"/>
+<circle cx="522.7" cy="331.9" r="21.0" fill="#bbb" stroke="#222" stroke-width="1.5"/>
+<text x="459.67600000000004" y="302.46000000000004" text-anchor="middle" font-size="10" fill="#555">AMPS mount bosses (M4, from outside)</text>
+<circle cx="828.3" cy="175.2" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="91.1" cy="175.2" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="828.3" cy="648.1" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="91.1" cy="648.1" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="828.3" cy="411.7" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="91.1" cy="411.7" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<circle cx="459.7" cy="175.2" r="13.7" fill="#999" stroke="#222" stroke-width="1.5"/>
+<line x1="70" y1="725.32" x2="100" y2="725.32" stroke="#d62728" stroke-width="3"/><text x="108" y="729.32" font-size="12">12 V from gland → Pololu VIN + driver VIN</text>
+<line x1="70" y1="745.32" x2="100" y2="745.32" stroke="#ff7f0e" stroke-width="3"/><text x="108" y="749.32" font-size="12">5 V Pololu → NANO 5V</text>
+<line x1="70" y1="765.32" x2="100" y2="765.32" stroke="#6f42c1" stroke-width="3"/><text x="108" y="769.32" font-size="12">FFC NANO → 22P (dashed); 6 MIPI jumpers 22P → 40P</text>
+<line x1="70" y1="785.32" x2="100" y2="785.32" stroke="#e6550d" stroke-width="3"/><text x="108" y="789.32" font-size="12">LED+/LED− driver → 40P pins 39/40, 31/32</text>
+<line x1="70" y1="805.32" x2="100" y2="805.32" stroke="#c51b8a" stroke-width="3"/><text x="108" y="809.32" font-size="12">GPS 3V3 / GND / TX / RX → NANO header (GPIO24/25)</text>
+<text x="70" y="833.32" font-size="12"><tspan font-weight="bold">Grey circles</tspan>: bezel screws (M3) and AMPS bosses. White: board screws. Positions from bike-dash-enclosure.scad;</text>
+<text x="70" y="851.32" font-size="12">pad sizes for the LED driver and breakouts are still VERIFY (measure the parts). Wire routes are suggestions.</text>
+</svg>
