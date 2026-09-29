@@ -94,6 +94,26 @@ Wiki: https://www.waveshare.com/wiki/ESP32-P4-Nano-StartPage . Schematic: https:
 | LCD backlight PWM (BSP default) | GPIO26 on the GPIO header |
 | DSI | 22-pin 0.5 mm FPC, 2 lanes + clock. The schematic also routes GPIO37, GPIO38, SDA/SCL and 3.3 V to it. We only use the six MIPI signals and ground from this connector; reset and backlight go from the header instead. |
 | Power | USB-C, or 5 V on the header, or PoE module |
+
+Header **P1** (2x13, 2.54 mm), from the schematic. Every pin this build uses is on P1:
+
+| Pin | Signal | Use | | Pin | Signal | Use |
+|---|---|---|---|---|---|---|
+| 1 | 3V3 | panel VDD/STBYB, GPS, touch VCC | | 2 | 5V | Pololu 5 V in |
+| 3 | GPIO7 | I2C SDA (touch) | | 4 | 5V | |
+| 5 | GPIO8 | I2C SCL (touch) | | 6 | GND | |
+| 7 | GPIO23 | touch RST | | 8 | GPIO37 | |
+| 9 | GND | | | 10 | GPIO38 | |
+| 11 | GPIO5 | | | 12 | GPIO4 | |
+| 13 | GPIO20 | | | 14 | GND | |
+| 15 | GPIO21 | | | 16 | GPIO22 | touch INT |
+| 17 | 3V3 | | | 18 | GPIO24 | GPS UART TX (P4 → GPS RX) |
+| 19 | GPIO25 | GPS UART RX (GPS TX → P4) | | 20 | GND | |
+| 21 | GPIO26 | backlight PWM | | 22 | GPIO27 | panel RESET |
+| 23 | GPIO32 | | | 24 | GPIO33 | |
+| 25 | GND | | | 26 | GPIO36 | |
+
+Header P2 carries GPIO0-3, 6, 45-48, 53, 54 and the C6 UART; not used here.
 | Storage | microSD, SDIO 3.0 |
 | ESPHome presets that exist for this board | `WAVESHARE-P4-NANO-10.1` (their 10.1" DSI panel); copy only the board-level bits |
 
