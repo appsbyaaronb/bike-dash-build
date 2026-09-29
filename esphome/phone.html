@@ -8,7 +8,9 @@
 :root{--bg:#05070a;--panel:#0d1117;--line:#1f2933;--fg:#e8edf2;--dim:#7d8b99;--acc:#3ddc97;--warn:#ffb020;--bad:#ff3b3b;
  --u:min(100vw/90,100dvh/195);--fit:1;--s:calc(var(--u)*var(--fit))}
 @media (orientation:landscape){:root{--u:min(100vw/195,100dvh/90)}}
-#dash>*{min-height:0}
+#dash>*{min-height:0;overflow:hidden}
+.bar,.row,.top,.bottom,hr,.rst{flex-shrink:0}
+.speed{min-height:0;overflow:hidden}
 html,body{margin:0;height:100%;background:#000;color:var(--fg);font-family:system-ui,sans-serif;overflow:hidden;-webkit-user-select:none;user-select:none}
 body{display:flex;align-items:center;justify-content:center}
 #dash{width:calc(var(--u)*90);height:calc(var(--u)*195);background:var(--bg);position:relative;overflow:hidden;
@@ -144,8 +146,10 @@ $('rbt').onclick=async()=>{const b=$('rbt');b.classList.add('hit');setTimeout(()
  setTimeout(()=>b.textContent='Restart Bluetooth',4000)};
 // Shrink content until it fits the frame (any window size / orientation).
 const dashEl=$('dash');
+const parts=[dashEl,...dashEl.querySelectorAll('.left,.right,.media,.speed,.ctl')];
+const over=()=>parts.some(el=>el.scrollHeight>el.clientHeight+1||el.scrollWidth>el.clientWidth+1);
 function fit(){let f=1;const r=document.documentElement.style;r.setProperty('--fit',1);
- for(let i=0;i<30&&(dashEl.scrollHeight>dashEl.clientHeight+1||dashEl.scrollWidth>dashEl.clientWidth+1);i++){f-=0.025;r.setProperty('--fit',f)}}
+ for(let i=0;i<40&&over();i++){f-=0.02;r.setProperty('--fit',f)}}
 addEventListener('resize',fit);addEventListener('orientationchange',()=>setTimeout(fit,300));setTimeout(fit,300);setInterval(fit,5000);
 setInterval(tick,250);tick();
 </script></body></html>
