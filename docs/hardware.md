@@ -15,6 +15,7 @@ Datasheet (no-touch sibling, same glass and electronics): [DS_RVT70HSMNWN00 Rev 
 | Logic supply | VDD 3.3 V (2.6-3.6), about 168 mA |
 | Backlight | 27 white LEDs, **Vf 9.6 V (9.0-10.2), If 270 mA typ, 315 mA max**, about 2.6 W. No driver on the panel. |
 | Touch | ILITEK ILI2132A PCAP, I2C, 10-point, thick-glove and wet operation, up to 8 mm cover glass. Not supported by ESPHome yet. |
+| Touch tail | Separate 10-pin FPC off the touch controller board (printed on the tail): 1 GND, 2 VDD5V, 3 D-, 4 D+, 5 GND, 6 VCC, 7 RST, 8 SCL, 9 INT, 10 SDA. Pins 2-4 are a USB HID path, pins 6-10 the I2C path. The controller board also has a small white JST socket. Not wired in this build. |
 | Size | 164.9 x 100 x 5.7 mm outline, 154.21 x 85.92 mm active |
 | Tail | 40-pin 0.5 mm pitch FPC, 0.3 mm thick, contacts on one side |
 
