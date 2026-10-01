@@ -50,6 +50,8 @@ ota:
   platform: esphome
 
 wifi:
+  # Two fixed IPs below, so ESPHome needs to be told which one OTA/logs use by default (home).
+  use_address: 192.168.7.18
   networks:
     # Home IoT (2.4 GHz). Fixed IP so the dash pages are always at 192.168.7.18.
     - ssid: !secret wifi_ssid
@@ -61,10 +63,16 @@ wifi:
         subnet: 255.255.255.0
         dns1: 192.168.8.105
         dns2: 9.9.9.9
-    # iPhone hotspot (turn on Maximize Compatibility for 2.4 GHz). DHCP from the phone.
+    # iPhone hotspot (turn on Maximize Compatibility for 2.4 GHz). Fixed IP so the dash
+    # pages are always at 172.20.10.9 (iPhone hotspots are always 172.20.10.0/28, phone = .1).
     - ssid: !secret wifi2_ssid
       password: !secret wifi2_password
       priority: 5
+      manual_ip:
+        static_ip: 172.20.10.9
+        gateway: 172.20.10.1
+        subnet: 255.255.255.240
+        dns1: 172.20.10.1
 
 i2c:
   sda: GPIO7
