@@ -11,7 +11,7 @@ Same thing as text, for when the picture is too small on a phone:
 ```
                  +---------------------+          +--------------------------+
  12 V supply --->| Pololu D36V28F5     |--5 V---->| Waveshare ESP32-P4-NANO  |
-    (bench:      | (12 V in, 5 V out)  |          |   22-pin DSI connector   |----22-pin FFC----> [22P breakout]
+    (bench:      | (12 V in, 5 V out)  |          |   15-pin DSI connector   |----15-pin FFC----> [15P breakout]
      wall wart;  +---------------------+          |   GPIO header            |                          |
      bike: fused                                  +--------------------------+                    6 short jumpers
      ignition 12 V)                                    |  GPIO27 (reset)  GPIO26 (dim)  3V3  GND        |
@@ -34,8 +34,8 @@ Multimeter, small flat screwdriver for the terminal blocks, wire strippers, a pa
 ## Step 0. Board alone, no panel (Stage 0 in software.md)
 
 1. Plug the P4-NANO into the PC over USB-C. Nothing else connected.
-2. Flash `esphome/bike-dash-p4nano.yaml` with the `display:` block commented out.
-3. Confirm the log shows the C6 radio coming up and Wi-Fi connecting. If this does not work, nothing else matters yet.
+2. Flash `esphome/bike-dash-nodisplay.yaml` (the same config without the `display:` block).
+3. Confirm the log shows the C6 radio coming up and Wi-Fi connecting. If this does not work, nothing else matters yet. (Done 2026-09-28; the board now runs `bike-dash-live.yaml`.)
 
 ## Step 1. Set the LED driver current before it ever touches the panel
 
@@ -44,7 +44,7 @@ The backlight driver is an eletechsup LD24AJTA (AliExpress, "DC 6-24V 30-900mA A
 1. Meter: red probe in the **10A** jack, dial on 10A DC. The mA jack is often fused at 200 mA.
 2. Turn the pot fully toward **decrease** (arrows are printed next to it).
 3. 12 V to VIN / GND. Red probe on **LED+**, black on **LED-**, nothing else on the output. PWM open (floating = full on).
-4. Power on. Turn the pot slowly toward increase until the meter reads **0.27 A** (panel: 270 mA typ, 315 mA max).
+4. Power on. Turn the pot slowly toward increase until the meter reads **0.26 A**. Do not go past **0.27 A**: the panel datasheet gives 270 mA as the working current and its absolute maximum is 30 mA per LED string x 9 strings = 270 mA, so there is no headroom above it.
 5. Power off, remove the meter. The setting holds whatever the load is.
 
 If it stops rising around 0.10 A, RCS is too big (1 ohm = 100 mA ceiling); it needs 0.33 ohm or less.
@@ -81,49 +81,79 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 | 2 **and** 3 | VDD 3.3 V | P4-NANO header **3V3** (use one jumper to pin 2 and a second from pin 2 to pin 3, or a Y) | red |
 | 5 | RESET | P4-NANO header **GPIO27** | yellow |
 | 6 | STBYB | P4-NANO header **3V3** (same 3.3 V as above) | red |
-| 7, 10, 13, 16, 19 | GND | P4-NANO header **GND** (at least two of them; the more the better) | black |
+| 7, 10, 13, 16, 19, 22, 25, 30 | GND | P4-NANO header **GND** (at least two of them; the more the better) | black |
+| 33 | L/R (scan direction) | P4-NANO header **3V3** | red |
+| 34 | U/D (scan direction) | P4-NANO header **GND** | black |
 | 31 **and** 32 | LED- | LED driver **LED-** | black |
 | 39 **and** 40 | LED+ | LED driver **LED+** | red |
-| 8 | D0N | 22-pin breakout, DSI **D0-** (Step 4) | pair 1 |
-| 9 | D0P | 22-pin breakout, DSI **D0+** | pair 1 |
-| 11 | D1N | 22-pin breakout, DSI **D1-** | pair 2 |
-| 12 | D1P | 22-pin breakout, DSI **D1+** | pair 2 |
-| 17 | DCLKN | 22-pin breakout, DSI **CLK-** | pair 3 |
-| 18 | DCLKP | 22-pin breakout, DSI **CLK+** | pair 3 |
-| 1, 4, 14, 15, 20, 21, 33-38 | NC / lanes 2-3 | **nothing** | |
-| 22-30 | GND / NC / scan direction | leave as the datasheet table says (GND pins to GND, NC open). If the image comes up mirrored later, the U/D and L/R pins here flip it. | |
+| 8 | D0N | 15-pin breakout, DSI **D0-** (Step 4) | pair 1 |
+| 9 | D0P | 15-pin breakout, DSI **D0+** | pair 1 |
+| 11 | D1N | 15-pin breakout, DSI **D1-** | pair 2 |
+| 12 | D1P | 15-pin breakout, DSI **D1+** | pair 2 |
+| 17 | DCLKN | 15-pin breakout, DSI **CLK-** | pair 3 |
+| 18 | DCLKP | 15-pin breakout, DSI **CLK+** | pair 3 |
+| 1, 4, 23, 24, 26-29, 35-38 | NC | **nothing** | |
+| 14, 15, 20, 21 | lanes 2-3 | **nothing** (the P4 is 2-lane) | |
+
+Pins 33 and 34 are inputs with nothing on the panel holding them, so they must be wired. 33 to 3.3 V and 34 to GND is the normal picture (top to bottom, left to right), the same as Riverdi's own reference circuit. Swap either one to flip the picture that way.
+
+The header has two 3V3 pins (P1 pins 1 and 17) and five GND pins (6, 9, 14, 20, 25). You will run out of 3V3 pins: join the 3.3 V wires on the perfboard or with a Y jumper.
 
 LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26**.
 
-## Step 4. Video side: the 22-pin breakout on the P4-NANO
+## Step 4. Video side: the 15-pin breakout on the P4-NANO
 
-The P4-NANO's DSI socket is a 22-pin 0.5 mm FPC. A 22-pin FFC cable goes from the NANO to the 22-pin breakout; then six jumpers go from the breakout to the 40-pin breakout (table in Step 3).
+The P4-NANO's DSI socket (J1, marked "15PIN--PI4B" on the schematic) is a **15-pin 1.0 mm** FPC, the same as the display socket on a Raspberry Pi 4. The 15-pin FFC cable that ships in the NANO box goes from the NANO to a 15-pin 1.0 mm breakout; then six jumpers go from the breakout to the 40-pin breakout (table in Step 3).
 
-**Which of the 22 pins are which has to be confirmed from the P4-NANO schematic when the board arrives**, because Waveshare's PDF does not have a text table. Schematic: https://files.waveshare.com/wiki/ESP32-P4-NANO/ESP32-P4-NANO-schematic.pdf , find the DSI connector symbol; its nets are `DSI_D0_N`, `DSI_D0_P`, `DSI_D1_N`, `DSI_D1_P`, `DSI_CLK_N`, `DSI_CLK_P`, plus `GPIO7`, `GPIO8`, `GPIO37`, `GPIO38`, 3V3 and GND. Write the pin numbers into the table below and commit it.
+The 22-pin 0.5 mm breakout and 22-pin FFC bought earlier do not fit this board. They are not used.
 
-Expected layout (the Raspberry Pi 22-pin DSI order that Waveshare's own DSI panels use; **confirm before wiring**):
+Pinout, read from the P4-NANO schematic (confirmed 2026-10-01):
 
-| 22-pin pin | Expected signal | Confirmed? |
-|---|---|---|
-| 1 | GND | |
-| 2 | DSI D0- | |
-| 3 | DSI D0+ | |
-| 4 | GND | |
-| 5 | DSI D1- | |
-| 6 | DSI D1+ | |
-| 7 | GND | |
-| 8 | DSI CLK- | |
-| 9 | DSI CLK+ | |
-| 10 | GND | |
-| 11-16 | lanes 2/3 on a 4-lane host, unused here | |
-| 17-22 | I2C, GPIO37/38, 3V3 | not used by this build |
+| 15-pin pin | Signal | Goes to (40-pin breakout) | Wire |
+|---|---|---|---|
+| 1 | GND | | |
+| 2 | DSI D1- | pin **11** (D1N) | pair 2 |
+| 3 | DSI D1+ | pin **12** (D1P) | pair 2 |
+| 4 | GND | | |
+| 5 | DSI CLK- | pin **17** (DCLKN) | pair 3 |
+| 6 | DSI CLK+ | pin **18** (DCLKP) | pair 3 |
+| 7 | GND | pin **7** or **10** (GND) | black |
+| 8 | DSI D0- | pin **8** (D0N) | pair 1 |
+| 9 | DSI D0+ | pin **9** (D0P) | pair 1 |
+| 10 | GND | pin **13** or **16** (GND) | black |
+| 11 | I2C SCL (GPIO8) | **nothing** | |
+| 12 | I2C SDA (GPIO7) | **nothing** | |
+| 13 | GND | | |
+| 14, 15 | 3.3 V | **nothing** (panel 3.3 V comes from the header) | |
 
-How to confirm with a meter (board powered **off**): continuity from a 22-pin breakout pin to a GND header pin tells you which pins are ground; the pairs sit between the grounds. That alone fixes pins 1-10 to the pattern above. Which of each pair is + and - cannot be measured; take it from the schematic. If you get a pair swapped the picture will not come up at all, so swapping the two wires of one pair is a legitimate troubleshooting step.
+Meter check before wiring (board powered **off**): the cable can leave the breakout's printed numbers running backwards. Put one probe on the P4-NANO header **3V3** pin and find the two breakout pins that beep. Those are pins 14 and 15. If they are the pins printed 1 and 2, the numbering is reversed: use 16 minus the printed number for every row above. Then confirm pins 1, 4, 7, 10 and 13 beep to a header **GND** pin.
+
+If the cable will not seat or nothing beeps, the contacts are facing the wrong way at one end; flip that end over.
 
 Rules for the six video jumpers:
 - Same length, as short as you can (100 mm max on the bench).
 - Keep each pair's two wires twisted together or taped side by side.
 - Do not run them next to the 12 V wires.
+
+Cables: use the 15-pin cable from the NANO box first. The uxcell 10-pack (100 mm, ordered 2026-10-01) is the spare; its contact side was not stated in the listing, so check it seats contacts-to-contacts at both ends.
+
+## Step 4a. Touch (10-pin tail)
+
+The touch tail is a separate 10-pin 0.5 mm FPC from the small board on the back of the panel. It goes into the 10-pin breakout. Pin numbers are the tail's (datasheet section 11.2).
+
+| Tail pin | Signal | Goes to | Wire |
+|---|---|---|---|
+| 5 | I2C GND | P4-NANO header **GND** | black |
+| 6 | I2C VDD | P4-NANO header **3V3**. **Never 5 V on this pin.** | red |
+| 7 | RST | P4-NANO header **GPIO23** (P1 pin 7) | yellow |
+| 8 | SCL | P4-NANO header **GPIO8** (P1 pin 5) | white |
+| 9 | INT | P4-NANO header **GPIO22** (P1 pin 16) | brown |
+| 10 | SDA | P4-NANO header **GPIO7** (P1 pin 3) | green |
+| 1, 2, 3, 4 | USB path (GND, 5 V, D-, D+) | **nothing** | |
+
+The breakout has a 2x5 header. Which header pin is which tail pin has to be read off the board's printing (or beeped out) when it arrives.
+
+Check: with it wired and the board running, the log's I2C scan should list a device at **0x41**. Nothing shows the touch points yet; the driver is not written (software.md Stage 6).
 
 ## Step 4b. GPS (speed source)
 
@@ -173,11 +203,13 @@ Test: with the dash running, the log prints satellites, speed and course from th
 | Symptom | Check |
 |---|---|
 | Backlight off | GPIO26 jumper; DIM floating should mean full on, so if it is still off the LED driver has no 12 V or LED+/- are swapped |
-| Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB tied to 3.3 V; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md |
+| Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB tied to 3.3 V; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md; then try `0xB2, 0x10` in place of `0xB2, 0x50` in the init sequence (Espressif's value for this chip) |
+| Picture jumps or will not hold still | THS_ZERO (hardware.md): the datasheet names exactly this symptom |
 | Log shows DSI errors | A pair swapped, or a pair to the wrong lane; try swapping + and - of one pair, then lanes 0 and 1 |
 | Scrambled or rolling picture | `lane_bit_rate` (try 800 or 1000 Mbps), then `pclk_frequency` |
-| Picture mirrored | scan-direction pins 22-30 on the panel |
+| Picture mirrored or upside down | panel pin 33 (L/R) or 34 (U/D): move that wire between 3V3 and GND. Also the result of leaving them unconnected. |
 | Panel gets hot | stop; check the LED driver current (Step 1) |
+| I2C scan shows nothing at 0x41 | touch tail seated and the right way up; pin 6 has 3.3 V; SDA and SCL not swapped |
 
 ## Step 6. Bike install (later)
 

@@ -55,9 +55,9 @@ i2c:
   sda: GPIO7
   scl: GPIO8
   frequency: 400kHz
-  scan: true   # touch ILI2132A should show at 0x41
+  scan: true   # touch ILI2132A shows at 0x41 (datasheet section 8)
 
-# GPS: u-blox M8/M10 on a UART. Module must be set to 10 Hz / 115200 (docs/wiring.md Step 4b).
+# GPS: SparkFun NEO-M9N on a UART. Module must be set to 10 Hz / 115200 (docs/wiring.md Step 4b).
 uart:
   - id: gps_uart
     tx_pin: ${gps_tx_pin}
@@ -142,14 +142,17 @@ display:
     lanes: 2
     lane_bit_rate: 900Mbps        # try 800-1000 if scrambled
     pclk_frequency: 51.2MHz       # datasheet typ; 44.9-63 MHz allowed
-    hsync_pulse_width: 70
+    # Pulse widths: datasheet gives only a range (H 1-140, V 1-20). 10 and 1 are Espressif's
+    # values for this controller and keep one line at 1354 clocks (limit 1200-1400).
+    hsync_pulse_width: 10
     hsync_back_porch: 160
     hsync_front_porch: 160
-    vsync_pulse_width: 10
+    vsync_pulse_width: 1
     vsync_back_porch: 23
     vsync_front_porch: 12
     reset_pin: ${lcd_reset_pin}
-    # Riverdi datasheet p.16, verbatim. 0xB2 0x50 = 2-lane.
+    # Riverdi datasheet section 13, with 0xB2 changed from 0x70 (4-lane) to 0x50 (2-lane).
+    # Espressif's ek79007 driver uses 0xB2 0x10 for 2 lanes: try that if the panel stays black.
     init_sequence:
       - [0x01]
       - delay 120ms

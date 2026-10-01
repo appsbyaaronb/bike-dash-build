@@ -36,3 +36,15 @@
   - The BMS stopped advertising late in the day. Neither the board nor the PC could see it, even after a power cycle. Suspect range or another connection holding it. Not resolved.
 - Backlight driver change: the PT4115 modules have a 1R0 sense resistor (100 mA, about 37 % brightness). Ordered an eletechsup LD24AJTA (AliExpress, $1.15, due Oct 04-09): current set by a pot to 270 mA on a meter first. Bare pads, six wires. Diagram, wiring.md, hardware.md and BOM updated.
 - GPS UART moved from GPIO24/25 (USB-Serial-JTAG pins, ESPHome warned) to GPIO20 TX / GPIO21 RX, header P1 pins 13/15. Configs, diagram, wiring.md, hardware.md, layout updated.
+
+## 2026-10-01 - wrong DSI connector caught, full check against the datasheets
+
+- The P4-NANO DSI socket is **15-pin 1.0 mm** (schematic J1, "15PIN--PI4B"), not 22-pin 0.5 mm. The 22P breakout and 22-pin FFC are unusable. Ordered a MECCANIXITY 15-pin 1.0 mm breakout ($8.49) and a uxcell 15-pin 1.0 mm 100 mm FFC 10-pack ($5.99), both due Oct 3. Pinout read from the schematic and written into wiring.md Step 4.
+- Riverdi now publishes the datasheet, drawing and backlight app note for the exact -B part (module revision V1.1A; ours is V1.0A). The old no-touch Rev 1.4 link is dead. Checking everything against them found:
+  - Panel pins **33 (L/R) and 34 (U/D)** set the scan direction and must be tied (33 to 3.3 V, 34 to GND). The docs had them as "leave open" and put scan direction in pins 22-30. Pins 22, 25, 30 are GND; 23, 24, 26-29 NC.
+  - Sync pulse widths 70/10 made one line 1414 clocks, over the 1400 limit. Now 10/1 (Espressif's values for the EK79007).
+  - Backlight: 270 mA is the absolute maximum (30 mA x 9 strings), not a midpoint, and there is no 315 mA figure. Target is now 260 mA. Vf is 9.0 V typ.
+  - Touch: I2C address 0x41 confirmed, I2C VDD is 3.3 V only. The diagram's "try 5 V if silent" note was wrong and is gone. wiring.md had no touch step; added Step 4a.
+  - VDD is 3.0-3.6 V at 110 mA (not 2.6 V / 168 mA). THS_ZERO target is about 213 ns.
+- Checked and correct: header P1 pin table against the schematic, C6 SDIO pins, the 40-pin MIPI/reset/STBYB/LED pins, init sequence bytes, the touch tail pinout, GPS wiring. All three YAML files validate. No secrets in tracked files.
+- Enclosure: not touched, by decision; it gets redone once everything works and is measured. Findings saved for then: TFT body is off-centre in the glass (5.90 right / 9.16 left / 11.58 top / 7.42 bottom, seen from the front); module is 7.68 mm thick max so the model's 5.7 mm TFT depth is about 0.9 mm short; the main FPC is 29.5 mm wide, about 1 mm right of the glass centre; the touch FPC is a second 35 mm tail about 49 mm right of centre and has no slot in the bezel or retainer; the M3 x 35, M2.5 x 8, M2 x 6 and GPS M3 x 6 screws are all longer than their holes are deep.
