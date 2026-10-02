@@ -24,7 +24,7 @@ Same thing as text, for when the picture is too small on a phone:
 
 Three groups of wires:
 1. **Power**: 12 V to the Pololu and the LED driver; 5 V from the Pololu to the P4-NANO; 3.3 V from the P4-NANO to the panel; one shared ground.
-2. **Control**: panel RESET from GPIO27, LED driver PWM from GPIO26, panel STBYB tied to 3.3 V.
+2. **Control**: panel RESET from GPIO27, LED driver PWM from GPIO26, panel STBYB from GPIO5 (header pin 11, driven high by the firmware).
 3. **Video**: six MIPI wires (three pairs) from the P4-NANO's DSI connector to the panel. These are the only fussy ones.
 
 ## Tools
@@ -96,14 +96,14 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 | 2 | VDD 3.3 V | 15-pin breakout pin **14** (3.3 V) | red |
 | 3 | VDD 3.3 V | 15-pin breakout pin **15** (3.3 V) | red |
 | 5 | RESET | P4-NANO header **GPIO27**, pin 22 | yellow |
-| 6 | STBYB | **3V3 splitter** (fed from header pin 1) | red |
+| 6 | STBYB | header **pin 11** (the firmware drives it high) | yellow |
 | 7 | GND | 15-pin breakout pin **10** | black |
 | 10 | GND | 15-pin breakout pin **7** | black |
 | 13 | GND | 15-pin breakout pin **1** | black |
 | 16 | GND | 15-pin breakout pin **4** | black |
 | 19 | GND | 15-pin breakout pin **13** | black |
 | 22, 25, 30 | GND | **nothing** (same ground inside the panel as the five above) | |
-| 33 | L/R (scan direction) | **3V3 splitter** (fed from header pin 1) | red |
+| 33 | L/R (scan direction) | header **3V3**, pin 1 | red |
 | 34 | U/D (scan direction) | P4-NANO header **GND**, pin 25 | black |
 | 31 **and** 32 | LED- | LED driver **LED-** | black |
 | 39 **and** 40 | LED+ | LED driver **LED+** | red |
@@ -130,9 +130,10 @@ Every ground and every 3.3 V wire has its own pin. Nothing is left as "any GND":
 | 15-pin breakout GND pins 10, 7, 1, 4, 13 | panel pins 7, 10, 13, 16, 19 |
 | 15-pin breakout 3.3 V pins 14, 15 | panel pins 2, 3 (VDD) |
 | Header **3V3** pin 17 | touch tail pin 6 (VCC) |
-| Header **3V3** pin 1 | the **3V3 splitter**, which feeds panel pin 6, panel pin 33 and GPS 3V3 |
+| Header **3V3** pin 1 | panel pin 33 (L/R) |
+| Header **5V** pin 4 | GPS **5V** (the GPS has its own 3.3 V regulator) |
 
-The 3V3 splitter is the one place three wires share a pin: use a 1-to-3 Dupont Y cable, or one row of a mini breadboard (one jumper in from header pin 1, three out).
+No splitter: every wire has its own pin. Panel pin 6 (STBYB) is a logic input, fed from header pin 11, which the firmware sets high at boot. (Panel pins 2 and 3 are not joined inside the panel, so both need their own wire.)
 
 LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26** (pin 21), plus the driver's second **GND** pad to a header **GND** pin (table in Step 2).
 
@@ -199,7 +200,7 @@ Four wires. TX goes to RX and RX goes to TX; that is the one everybody gets back
 
 | GPS pin (SparkFun NEO-M9N) | Goes to | Wire |
 |---|---|---|
-| **3V3** | the **3V3 splitter** (fed from header **3V3**, pin 1). **Not 5V: this board is 3.3 V only and 5 V will kill it.** | red |
+| **5V** (right-hand row, 2nd pin) | P4-NANO header **5V**, pin 4. The board's regulator makes 3.3 V from it. **Leave both GPS 3V3 pins empty: 5 V on a 3V3 pin kills it.** | orange |
 | GND | P4-NANO header **GND**, pin 14 | black |
 | TX (GPS talks) | P4-NANO header **GPIO21** (P1 pin 15, P4 RX) | green |
 | RX (GPS listens) | P4-NANO header **GPIO20** (P1 pin 13, P4 TX) | white |
@@ -239,7 +240,7 @@ Test: with the dash running, the log prints satellites, speed and course from th
 | Symptom | Check |
 |---|---|
 | Backlight off | GPIO26 jumper; DIM floating should mean full on, so if it is still off the LED driver has no 12 V or LED+/- are swapped |
-| Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB tied to 3.3 V; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md; then try `0xB2, 0x10` in place of `0xB2, 0x50` in the init sequence (Espressif's value for this chip) |
+| Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB wire (pin 11 to panel 6) and pin 11 reads 3.3 V after boot; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md; then try `0xB2, 0x10` in place of `0xB2, 0x50` in the init sequence (Espressif's value for this chip) |
 | Picture jumps or will not hold still | THS_ZERO (hardware.md): the datasheet names exactly this symptom |
 | Log shows DSI errors | A pair swapped, or a pair to the wrong lane; try swapping + and - of one pair, then lanes 0 and 1 |
 | Scrambled or rolling picture | `lane_bit_rate` (try 800 or 1000 Mbps), then `pclk_frequency` |

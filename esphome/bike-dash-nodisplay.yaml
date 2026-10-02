@@ -5,6 +5,7 @@
 substitutions:
   name: bike-dash
   lcd_reset_pin: GPIO27
+  lcd_stbyb_pin: GPIO5    # panel 40P pin 6 (STBYB), header P1 pin 11. Driven high = panel on
   backlight_pwm_pin: GPIO26
   gps_tx_pin: GPIO20   # P4 TX -> GPS RX. header P1 pin 13 (24/25 are the USB-Serial-JTAG pins)
   gps_rx_pin: GPIO21   # P4 RX <- GPS TX. header P1 pin 15
@@ -112,6 +113,14 @@ time:
 #       - delay: 200ms
 #       - lambda: |-
 #           id(gps_uart).set_baud_rate(115200); id(gps_uart).load_settings();
+
+# Panel STBYB (standby) is driven from a GPIO instead of a 3V3 splitter. High = panel running.
+switch:
+  - platform: gpio
+    id: lcd_stbyb
+    pin: ${lcd_stbyb_pin}
+    restore_mode: ALWAYS_ON
+    internal: true
 
 # Backlight: LEDC PWM into the LED driver PWM pin. About 5 kHz so it is not visible.
 output:

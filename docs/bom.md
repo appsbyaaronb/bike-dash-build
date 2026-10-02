@@ -18,7 +18,7 @@ Ordered 2026-09-18 unless noted. Prices are what was on screen that day.
 | 5c | ~~22-pin 0.5 mm FFC cable, 10 cm~~ **wrong part, not used** (see 4c) | Amazon | — | — | ordered 2026-09-28 |
 | 5d | MECCANIXITY 10-pin 0.5 mm FPC breakout, 2-pack, shrouded 2x5 header fitted (touch tail) | Amazon | $7.99 | [B0CZ97XHVV](https://www.amazon.com/MECCANIXITY-Connector-Adapter-Converter-Digital/dp/B0CZ97XHVV) | ordered 2026-09-28, due Oct 3 |
 | 5e | EDGELEC Dupont jumpers, 120 pcs assorted (F-F / M-M / M-F), 20 cm (power, control, GPS, touch) and 10 cm (the 6 MIPI wires) | Amazon | $6.98 each | EDGELEC store | ordered 2026-09-28 |
-| 5f | 3V3 splitter: 1-to-3 Dupont Y cable, or a mini breadboard (one row). Joins header pin 1 to panel 6, panel 33 and GPS 3V3 (wiring.md Step 3) | any | a few dollars | — | **not ordered** |
+| 5f | ~~3V3 splitter~~ | — | — | — | **not needed** (2026-10-02: GPS on 5V pin 4, STBYB on GPIO pin 11) |
 | 6 | Pololu D36V28F5 5 V 3.2 A buck, 5.3-50 V in (bike 12 V to 5 V) | Amazon | $16.99 | [B0BJKVWR2D](https://www.amazon.com/Pololu-3-2A-Step-Down-Voltage-Regulator/dp/B0BJKVWR2D) | ordered 2026-09-18 |
 | 7 | **SparkFun GPS Breakout NEO-M9N, chip antenna (Qwiic)**: genuine u-blox M9, 25 Hz max, UART pins + I2C, **3.3 V supply and logic**, rechargeable backup battery keeps settings and gives a hot fix | Amazon | $74.95 | [B082YG1PXF](https://www.amazon.com/SparkFun-Breakout-Breadboardable-time-First-f/dp/B082YG1PXF) (Prime) | ordered 2026-09-18 |
 | 8 | USB-to-TTL serial adapter, 3.3 V (for the one-time 10 Hz / 115200 setup in u-center) | Amazon | about $8 | any CP2102 or FT232 board with a 3.3 V switch | ordered 2026-09-18 |
@@ -31,7 +31,7 @@ GPS notes: it is the speed source for the dash (speed and trip come from GPS, no
 
 | Part | Why | Notes |
 |---|---|---|
-| Screw terminal or small perfboard | To join grounds, the 12 V feeds and the 3.3 V wires. The panel, touch and GPS need six 3.3 V connections and the header has two 3V3 pins. | |
+| Screw terminal or small perfboard | To join the 12 V feeds on the bike. (No 3.3 V joins needed any more: every 3.3 V wire has its own pin.) | |
 | 12 V bench supply, 2 A | Backlight + buck | A 12 V wall adapter with a barrel jack pigtail is fine |
 | Multimeter | Setting the LED driver to 260 mA (10A jack) and the 5 V rail before connecting the panel | |
 

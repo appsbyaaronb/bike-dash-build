@@ -5,6 +5,7 @@
 substitutions:
   name: bike-dash
   lcd_reset_pin: GPIO27
+  lcd_stbyb_pin: GPIO5    # panel 40P pin 6 (STBYB), header P1 pin 11. Driven high = panel on
   backlight_pwm_pin: GPIO26
   gps_tx_pin: GPIO20   # P4 TX -> GPS RX. header P1 pin 13 (24/25 are the USB-Serial-JTAG pins)
   gps_rx_pin: GPIO21   # P4 RX <- GPS TX. header P1 pin 15
@@ -151,6 +152,7 @@ display:
     vsync_back_porch: 23
     vsync_front_porch: 12
     reset_pin: ${lcd_reset_pin}
+    enable_pin: ${lcd_stbyb_pin}   # STBYB, set high before init
     # Riverdi datasheet section 13, with 0xB2 changed from 0x70 (4-lane) to 0x50 (2-lane).
     # Espressif's ek79007 driver uses 0xB2 0x10 for 2 lanes: try that if the panel stays black.
     init_sequence:

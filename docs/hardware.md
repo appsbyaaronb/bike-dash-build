@@ -30,7 +30,7 @@ These documents are for module revision **V1.1A**. The panel bought from DigiKey
 | 2, 3 | VDD | 3.3 V |
 | 4 | NC | |
 | 5 | RESET | active low; datasheet Note 1 has a recommended RC reset circuit |
-| 6 | STBYB | standby, tie to 3.3 V for normal operation |
+| 6 | STBYB | standby, high for normal operation. Driven from GPIO5 (P1 pin 11) |
 | 7 | GND | |
 | 8, 9 | D0N, D0P | MIPI lane 0 |
 | 10 | GND | |
@@ -111,15 +111,15 @@ Header **P1** (2x13, 2.54 mm), from the schematic. Every pin this build uses is 
 
 | Pin | Signal | Use | | Pin | Signal | Use |
 |---|---|---|---|---|---|---|
-| 1 | 3V3 | panel VDD/STBYB, GPS, touch VCC | | 2 | 5V | Pololu 5 V in |
-| 3 | GPIO7 | I2C SDA (touch) | | 4 | 5V | |
+| 1 | 3V3 | panel 33 (L/R) | | 2 | 5V | Pololu 5 V in |
+| 3 | GPIO7 | I2C SDA (touch) | | 4 | 5V | GPS 5V |
 | 5 | GPIO8 | I2C SCL (touch) | | 6 | GND | |
 | 7 | GPIO23 | touch RST | | 8 | GPIO37 | |
 | 9 | GND | | | 10 | GPIO38 | |
-| 11 | GPIO5 | | | 12 | GPIO4 | |
+| 11 | GPIO5 | panel STBYB (pin 6) | | 12 | GPIO4 | |
 | 13 | GPIO20 | GPS UART TX (P4 → GPS RX) | | 14 | GND | |
 | 15 | GPIO21 | GPS UART RX (GPS TX → P4) | | 16 | GPIO22 | touch INT |
-| 17 | 3V3 | | | 18 | GPIO24 | USB-Serial-JTAG D−, left free |
+| 17 | 3V3 | touch VCC | | 18 | GPIO24 | USB-Serial-JTAG D−, left free |
 | 19 | GPIO25 | USB-Serial-JTAG D+, left free | | 20 | GND | |
 | 21 | GPIO26 | backlight PWM | | 22 | GPIO27 | panel RESET |
 | 23 | GPIO32 | | | 24 | GPIO33 | |
