@@ -45,7 +45,7 @@
   <text x="66" y="510">GND (NANO pin 9)</text>
   <line x1="60" y1="506" x2="45" y2="506" stroke="#222" stroke-width="2"/>
   <use href="#gnd" x="45" y="506"/>
-  <text x="66" y="536">PWM</text>
+  <text x="66" y="536">PWM (NANO pin 21)</text>
   <text x="140" y="574" font-size="10" text-anchor="middle" fill="#555">PT4115 (1R0) stand-in: same pads, fixed 100 mA, dim</text>
   <text x="214" y="514" text-anchor="end">LED+</text>
   <text x="214" y="544" text-anchor="end">LED−</text>
