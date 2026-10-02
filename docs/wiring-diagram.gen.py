@@ -68,8 +68,8 @@ for (a,c,b),y in zip(rows15,ry): w([(1030,y),(1130,y)],c)
 # NANO pin 25 GND -> panel 34
 w([(770,590),(885,590),(885,735),(1130,735)],BLK)
 # touch
-tr=[('GPIO7 (pin 3)',CYA,'10  SDA'),('GPIO8 (pin 5)',TEAL,'8  SCL'),('GPIO22 (pin 16)',BRN,'9  INT'),
-    ('GPIO23 (pin 7)',GOLD,'7  RST'),('3V3 (pin 17)',PINK,'6  VCC (3.3 V)'),('GND (pin 20)',BLK,'5  GND')]
+tr=[('pin 3 (GPIO7)',CYA,'10  SDA'),('pin 5 (GPIO8)',TEAL,'8  SCL'),('pin 16 (GPIO22)',BRN,'9  INT'),
+    ('pin 7 (GPIO23)',GOLD,'7  RST'),('pin 17 (3V3)',PINK,'6  VCC (3.3 V)'),('pin 20 (GND)',BLK,'5  GND')]
 ty=[615+25*i for i in range(6)]; tx=[870-15*i for i in range(6)]; by=[850+24*i for i in range(6)]
 for (a,c,b),y,x,yy in zip(tr,ty,tx,by): w([(770,y),(x,y),(x,yy),(900,yy)],c)
 # tails
@@ -100,10 +100,10 @@ t(116,539,'GND'); t(116,569,'IN'); t(264,539,'OUT',anchor='end'); t(264,569,'GND
 t(190,596,'EN, PG: leave open',10,'middle','#555'); t(190,610,'the two GND pads are joined',10,'middle','#555')
 # NANO
 box(470,110,300,680,'#eef3fb',8); t(620,134,'Waveshare ESP32-P4-NANO',14,'middle',bold=True)
-t(476,152,'printed label (pin n =',10,fill='#555'); t(476,165,'position on header P1)',10,fill='#555')
-t(476,424,'GPIO26 (pin 21)'); t(476,449,'GND (pin 9)'); t(476,539,'5V (pin 2)'); t(476,569,'GND (pin 6)')
+t(476,152,'pin n = position on header P1',10,fill='#555'); t(476,165,'(name) = label printed on the board',10,fill='#555')
+t(476,424,'pin 21 (GPIO26)'); t(476,449,'pin 9 (GND)'); t(476,539,'pin 2 (5V)'); t(476,569,'pin 6 (GND)')
 t(476,610,'bench: USB-C can power the board',10,fill='#555'); t(476,623,'instead of the Pololu (leave pins 2, 6 open)',10,fill='#555')
-for y,s in ((150,'GND (pin 14)'),(172,'GPIO21 (pin 15)'),(194,'GPIO20 (pin 13)'),(225,'3V3 (pin 1)'),(305,'GPIO27 (pin 22)'),(590,'GND (pin 25)')):
+for y,s in ((150,'pin 14 (GND)'),(172,'pin 15 (GPIO21)'),(194,'pin 13 (GPIO20)'),(225,'pin 1 (3V3)'),(305,'pin 22 (GPIO27)'),(590,'pin 25 (GND)')):
     t(764,y+4,s,anchor='end')
 for (a,c,b),y in zip(tr,ty): t(764,y+4,a,anchor='end')
 A('<rect x="742" y="420" width="28" height="120" fill="#d9e2f3" stroke="#222"/>')
