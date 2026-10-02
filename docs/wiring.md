@@ -13,7 +13,7 @@ Same thing as text, for when the picture is too small on a phone:
  12 V supply --->| Pololu D36V28F5     |--5 V---->| Waveshare ESP32-P4-NANO  |
     (bench:      | (12 V in, 5 V out)  |          |   15-pin DSI connector   |----15-pin FFC----> [15P breakout]
      wall wart;  +---------------------+          |   GPIO header            |                          |
-     bike: fused                                  +--------------------------+                    6 short jumpers
+     bike: fused                                  +--------------------------+                   13 short jumpers
      ignition 12 V)                                    |  GPIO27 (reset)  GPIO26 (dim)  3V3  GND        |
          |                                             |     |               |          |    |           v
          |       +---------------------+               |     |               |          |    |     [40P breakout] <--panel tail-- Riverdi 7" panel
@@ -57,12 +57,14 @@ All terminal blocks: strip 6 mm, insert, tighten, tug-test.
 
 | From | To | Wire |
 |---|---|---|
-| 12 V supply + | Pololu **VIN** | red |
-| 12 V supply - | Pololu **GND** | black |
-| Pololu **VOUT** (5 V) | P4-NANO header pin labelled **5V** | red |
-| Pololu **GND** | P4-NANO header pin labelled **GND** | black |
+| 12 V supply + | Pololu **IN** | red |
+| 12 V supply - | Pololu **GND** (either GND pad) | black |
+| Pololu **OUT** (5 V) | P4-NANO header **5V**, pin 2 | red |
+| Pololu **GND** (the other GND pad) | P4-NANO header **GND**, pin 6 | black |
 
-Check with the meter before going on: Pololu VOUT to GND reads **4.9-5.1 V**. If it reads 12 V you wired VIN and VOUT backwards. Power off.
+The Pololu board prints **IN** and **OUT**. Its bottom row reads OUT, GND, GND, IN, EN; PG is the single hole above. Leave EN and PG open.
+
+Check with the meter before going on: Pololu OUT to GND reads **4.9-5.1 V**. If it reads 12 V you wired IN and OUT backwards. Power off.
 
 On the bench you can skip the Pololu and just use USB-C for the P4-NANO. You still need 12 V for the LED driver.
 
@@ -91,12 +93,18 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 
 | Breakout pin | Panel signal | Goes to | Wire |
 |---|---|---|---|
-| 2 **and** 3 | VDD 3.3 V | P4-NANO header **3V3** (use one jumper to pin 2 and a second from pin 2 to pin 3, or a Y) | red |
-| 5 | RESET | P4-NANO header **GPIO27** | yellow |
-| 6 | STBYB | P4-NANO header **3V3** (same 3.3 V as above) | red |
-| 7, 10, 13, 16, 19, 22, 25, 30 | GND | P4-NANO header **GND** (at least two of them; the more the better) | black |
-| 33 | L/R (scan direction) | P4-NANO header **3V3** | red |
-| 34 | U/D (scan direction) | P4-NANO header **GND** | black |
+| 2 | VDD 3.3 V | 15-pin breakout pin **14** (3.3 V) | red |
+| 3 | VDD 3.3 V | 15-pin breakout pin **15** (3.3 V) | red |
+| 5 | RESET | P4-NANO header **GPIO27**, pin 22 | yellow |
+| 6 | STBYB | **3V3 splitter** (fed from header pin 1) | red |
+| 7 | GND | 15-pin breakout pin **10** | black |
+| 10 | GND | 15-pin breakout pin **7** | black |
+| 13 | GND | 15-pin breakout pin **1** | black |
+| 16 | GND | 15-pin breakout pin **4** | black |
+| 19 | GND | 15-pin breakout pin **13** | black |
+| 22, 25, 30 | GND | **nothing** (same ground inside the panel as the five above) | |
+| 33 | L/R (scan direction) | **3V3 splitter** (fed from header pin 1) | red |
+| 34 | U/D (scan direction) | P4-NANO header **GND**, pin 25 | black |
 | 31 **and** 32 | LED- | LED driver **LED-** | black |
 | 39 **and** 40 | LED+ | LED driver **LED+** | red |
 | 8 | D0N | 15-pin breakout, DSI **D0-** (Step 4) | pair 1 |
@@ -110,13 +118,27 @@ Now wire the breakout's header pins. Pin numbers are the **panel** pin numbers (
 
 Pins 33 and 34 are inputs with nothing on the panel holding them, so they must be wired. 33 to 3.3 V and 34 to GND is the normal picture (top to bottom, left to right), the same as Riverdi's own reference circuit. Swap either one to flip the picture that way.
 
-The header has two 3V3 pins (P1 pins 1 and 17) and five GND pins (6, 9, 14, 20, 25). You will run out of 3V3 pins: join the 3.3 V wires on the perfboard or with a Y jumper.
+Every ground and every 3.3 V wire has its own pin. Nothing is left as "any GND":
+
+| Source pin | Feeds |
+|---|---|
+| Header **GND** pin 6 | Pololu GND |
+| Header **GND** pin 9 | LED driver GND (the pad next to PWM) |
+| Header **GND** pin 14 | GPS GND |
+| Header **GND** pin 20 | touch tail pin 5 |
+| Header **GND** pin 25 | panel pin 34 (U/D) |
+| 15-pin breakout GND pins 10, 7, 1, 4, 13 | panel pins 7, 10, 13, 16, 19 |
+| 15-pin breakout 3.3 V pins 14, 15 | panel pins 2, 3 (VDD) |
+| Header **3V3** pin 17 | touch tail pin 6 (VCC) |
+| Header **3V3** pin 1 | the **3V3 splitter**, which feeds panel pin 6, panel pin 33 and GPS 3V3 |
+
+The 3V3 splitter is the one place three wires share a pin: use a 1-to-3 Dupont Y cable, or one row of a mini breadboard (one jumper in from header pin 1, three out).
 
 LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26** (pin 21), plus the driver's second **GND** pad to a header **GND** pin (table in Step 2).
 
 ## Step 4. Video side: the 15-pin breakout on the P4-NANO
 
-The P4-NANO's DSI socket (J1, marked "15PIN--PI4B" on the schematic) is a **15-pin 1.0 mm** FPC, the same as the display socket on a Raspberry Pi 4. The 15-pin FFC cable that ships in the NANO box goes from the NANO to a 15-pin 1.0 mm breakout; then six jumpers go from the breakout to the 40-pin breakout (table in Step 3).
+The P4-NANO's DSI socket (J1, marked "15PIN--PI4B" on the schematic) is a **15-pin 1.0 mm** FPC, the same as the display socket on a Raspberry Pi 4. The 15-pin FFC cable that ships in the NANO box goes from the NANO to a 15-pin 1.0 mm breakout; then thirteen jumpers go from the breakout to the 40-pin breakout: six video, five ground, two 3.3 V (table in Step 3).
 
 The 22-pin 0.5 mm breakout and 22-pin FFC bought earlier do not fit this board. They are not used.
 
@@ -124,20 +146,21 @@ Pinout, read from the P4-NANO schematic (confirmed 2026-10-01):
 
 | 15-pin pin | Signal | Goes to (40-pin breakout) | Wire |
 |---|---|---|---|
-| 1 | GND | | |
+| 1 | GND | pin **13** (GND) | black |
 | 2 | DSI D1- | pin **11** (D1N) | pair 2 |
 | 3 | DSI D1+ | pin **12** (D1P) | pair 2 |
-| 4 | GND | | |
+| 4 | GND | pin **16** (GND) | black |
 | 5 | DSI CLK- | pin **17** (DCLKN) | pair 3 |
 | 6 | DSI CLK+ | pin **18** (DCLKP) | pair 3 |
-| 7 | GND | pin **7** or **10** (GND) | black |
+| 7 | GND | pin **10** (GND) | black |
 | 8 | DSI D0- | pin **8** (D0N) | pair 1 |
 | 9 | DSI D0+ | pin **9** (D0P) | pair 1 |
-| 10 | GND | pin **13** or **16** (GND) | black |
+| 10 | GND | pin **7** (GND) | black |
 | 11 | I2C SCL (GPIO8) | **nothing** | |
 | 12 | I2C SDA (GPIO7) | **nothing** | |
-| 13 | GND | | |
-| 14, 15 | 3.3 V | **nothing** (panel 3.3 V comes from the header) | |
+| 13 | GND | pin **19** (GND) | black |
+| 14 | 3.3 V | pin **2** (VDD) | red |
+| 15 | 3.3 V | pin **3** (VDD) | red |
 
 Meter check before wiring (board powered **off**): the cable can leave the breakout's printed numbers running backwards. Put one probe on the P4-NANO header **3V3** pin and find the two breakout pins that beep. Those are pins 14 and 15. If they are the pins printed 1 and 2, the numbering is reversed: use 16 minus the printed number for every row above. Then confirm pins 1, 4, 7, 10 and 13 beep to a header **GND** pin.
 
@@ -156,8 +179,8 @@ The touch tail is a separate 10-pin 0.5 mm FPC from the small board on the back 
 
 | Tail pin | Signal | Goes to | Wire |
 |---|---|---|---|
-| 5 | I2C GND | P4-NANO header **GND** | black |
-| 6 | I2C VDD | P4-NANO header **3V3**. **Never 5 V on this pin.** | red |
+| 5 | I2C GND | P4-NANO header **GND**, pin 20 | black |
+| 6 | I2C VDD | P4-NANO header **3V3**, pin 17. **Never 5 V on this pin.** | red |
 | 7 | RST | P4-NANO header **GPIO23** (P1 pin 7) | yellow |
 | 8 | SCL | P4-NANO header **GPIO8** (P1 pin 5) | white |
 | 9 | INT | P4-NANO header **GPIO22** (P1 pin 16) | brown |
@@ -176,8 +199,8 @@ Four wires. TX goes to RX and RX goes to TX; that is the one everybody gets back
 
 | GPS pin (SparkFun NEO-M9N) | Goes to | Wire |
 |---|---|---|
-| **3V3** | P4-NANO header **3V3**. **Not 5V: this board is 3.3 V only and 5 V will kill it.** | red |
-| GND | P4-NANO header **GND** | black |
+| **3V3** | the **3V3 splitter** (fed from header **3V3**, pin 1). **Not 5V: this board is 3.3 V only and 5 V will kill it.** | red |
+| GND | P4-NANO header **GND**, pin 14 | black |
 | TX (GPS talks) | P4-NANO header **GPIO21** (P1 pin 15, P4 RX) | green |
 | RX (GPS listens) | P4-NANO header **GPIO20** (P1 pin 13, P4 TX) | white |
 
