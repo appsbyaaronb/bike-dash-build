@@ -43,10 +43,8 @@
   <use href="#gnd" x="45" y="454"/>
   <text x="66" y="484">VIN (12 V)</text>
   <text x="66" y="510">GND (NANO pin 9)</text>
-  <line x1="60" y1="506" x2="45" y2="506" stroke="#222" stroke-width="2"/>
-  <use href="#gnd" x="45" y="506"/>
   <text x="66" y="536">PWM (NANO pin 21)</text>
-  <text x="140" y="574" font-size="10" text-anchor="middle" fill="#555">PT4115 (1R0) stand-in: same pads, fixed 100 mA, dim</text>
+  <text x="150" y="574" font-size="10" text-anchor="middle" fill="#555">PT4115 (1R0) stand-in: same pads, fixed 100 mA, dim</text>
   <text x="214" y="514" text-anchor="end">LED+</text>
   <text x="214" y="544" text-anchor="end">LED−</text>
 
@@ -65,8 +63,11 @@
   <text x="325" y="244" font-size="11" fill="#c8600a" text-anchor="middle">5 V</text>
 
   <!-- DIM to GPIO26 -->
-  <polyline points="60,532 14,532 14,592 380,592 380,300 430,300" fill="none" stroke="#1f77b4" stroke-width="2.5"/>
-  <text x="130" y="606" font-size="11" fill="#1f77b4" text-anchor="middle">PWM dim → GPIO26 (pin 21)</text>
+  <polyline points="60,532 22,532 22,596 380,596 380,300 430,300" fill="none" stroke="#1f77b4" stroke-width="2.5"/>
+  <!-- driver GND to NANO GND pin 9 -->
+  <polyline points="60,506 12,506 12,614 394,614 394,336 430,336" fill="none" stroke="#222" stroke-width="2.5"/>
+  <text x="130" y="609" font-size="10" text-anchor="middle">driver GND → NANO GND (pin 9)</text>
+  <text x="290" y="591" font-size="10" fill="#1f77b4" text-anchor="middle">PWM dim</text>
 
   <!-- LED+ / LED- to 40P breakout, routed under everything -->
   <polyline points="220,510 360,510 360,840 1000,840 1000,600 1040,600" fill="none" stroke="#e6550d" stroke-width="2.5"/>
@@ -80,6 +81,7 @@
   <text x="570" y="182" font-size="11" text-anchor="middle" fill="#555">printed label (pin n = position on header P1)</text>
   <text x="436" y="254">5V (pin 2)</text>
   <text x="436" y="304">GPIO26 (pin 21)</text>
+  <text x="436" y="340">GND (pin 9)</text>
   <text x="704" y="209" text-anchor="end">GPIO27 (pin 22)</text>
   <text x="704" y="244" text-anchor="end">3V3 (pin 1)</text>
   <text x="704" y="284" text-anchor="end">GND (pin 6, 9, 14, 20, 25)</text>
