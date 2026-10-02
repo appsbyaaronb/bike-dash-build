@@ -73,21 +73,24 @@
   <!-- ===== P4-NANO ===== -->
   <rect x="430" y="140" width="280" height="480" rx="8" fill="#eef3fb" stroke="#222" stroke-width="1.5"/>
   <text x="570" y="165" font-size="14" font-weight="bold" text-anchor="middle">Waveshare ESP32-P4-NANO</text>
-  <text x="570" y="182" font-size="11" text-anchor="middle" fill="#555">header pin names as printed on the board</text>
-  <text x="436" y="254">5V</text>
-  <text x="436" y="304">GPIO26</text>
-  <text x="704" y="209" text-anchor="end">GPIO27</text>
-  <text x="704" y="244" text-anchor="end">3V3</text>
-  <text x="704" y="284" text-anchor="end">GND</text>
+  <text x="570" y="182" font-size="11" text-anchor="middle" fill="#555">printed label (pin n = position on header P1)</text>
+  <text x="436" y="254">5V (pin 2)</text>
+  <text x="436" y="304">GPIO26 (pin 21)</text>
+  <text x="704" y="209" text-anchor="end">GPIO27 (pin 22)</text>
+  <text x="704" y="244" text-anchor="end">3V3 (pin 1)</text>
+  <text x="704" y="284" text-anchor="end">GND (pin 6, 9, 14, 20, 25)</text>
   <line x1="710" y1="280" x2="725" y2="280" stroke="#222" stroke-width="2"/>
   <use href="#gnd" x="725" y="280"/>
   <rect x="682" y="400" width="28" height="100" fill="#d9e2f3" stroke="#222"/>
   <text x="696" y="450" font-size="10" text-anchor="middle" transform="rotate(-90 696 450)">DSI 15-pin</text>
-  <text x="480" y="612" font-size="11" text-anchor="middle">3V3</text>
-  <text x="590" y="612" font-size="11" text-anchor="middle">GPIO21 (RX)</text>
-  <text x="660" y="612" font-size="11" text-anchor="middle">GPIO20 (TX)</text>
-  <text x="570" y="380" font-size="11" text-anchor="middle" fill="#555">C6 radio on GPIO14–19, 54 (internal)</text>
-  <text x="570" y="396" font-size="11" text-anchor="middle" fill="#555">I2C GPIO7/8 → touch</text>
+  <text x="480" y="598" font-size="11" text-anchor="middle">3V3</text>
+  <text x="480" y="612" font-size="11" text-anchor="middle">pin 1 or 17</text>
+  <text x="590" y="598" font-size="11" text-anchor="middle">GPIO21 (RX)</text>
+  <text x="590" y="612" font-size="11" text-anchor="middle">pin 15</text>
+  <text x="660" y="598" font-size="11" text-anchor="middle">GPIO20 (TX)</text>
+  <text x="660" y="612" font-size="11" text-anchor="middle">pin 13</text>
+  <text x="555" y="430" font-size="11" text-anchor="middle" fill="#555">C6 radio on GPIO14–19, 54 (internal)</text>
+  <text x="555" y="446" font-size="11" text-anchor="middle" fill="#555">I2C GPIO7/8 → touch</text>
 
   <!-- GPIO27 -> RESET, 3V3 -> VDD + STBYB -->
   <line x1="710" y1="205" x2="1040" y2="205" stroke="#b8860b" stroke-width="2.5"/>
@@ -183,8 +186,8 @@
   <line x1="52" y1="656" x2="92" y2="656" stroke="#d62728" stroke-width="2.5"/><text x="100" y="660">12 V</text>
   <line x1="52" y1="676" x2="92" y2="676" stroke="#ff7f0e" stroke-width="2.5"/><text x="100" y="680">5 V</text>
   <line x1="52" y1="696" x2="92" y2="696" stroke="#d63384" stroke-width="2.5"/><text x="100" y="700">3.3 V</text>
-  <line x1="52" y1="716" x2="92" y2="716" stroke="#b8860b" stroke-width="2.5"/><text x="100" y="720">RESET (GPIO27)</text>
-  <line x1="52" y1="736" x2="92" y2="736" stroke="#1f77b4" stroke-width="2.5"/><text x="100" y="740">backlight dim PWM (GPIO26)</text>
+  <line x1="52" y1="716" x2="92" y2="716" stroke="#b8860b" stroke-width="2.5"/><text x="100" y="720">RESET (GPIO27, pin 22)</text>
+  <line x1="52" y1="736" x2="92" y2="736" stroke="#1f77b4" stroke-width="2.5"/><text x="100" y="740">backlight dim PWM (GPIO26, pin 21)</text>
   <line x1="52" y1="756" x2="92" y2="756" stroke="#e6550d" stroke-width="2.5"/><text x="100" y="760">LED+ backlight</text>
   <line x1="52" y1="776" x2="92" y2="776" stroke="#444" stroke-width="2.5" stroke-dasharray="8 4"/><text x="100" y="780">LED− backlight return</text>
   <line x1="52" y1="796" x2="92" y2="796" stroke="#6f42c1" stroke-width="2.5"/><text x="100" y="800">MIPI pairs (D0, D1, CLK)</text>
@@ -197,19 +200,19 @@
   <g font-family="Arial, Helvetica, sans-serif">
   <!-- ===== Touch: 10P breakout ===== -->
   <rect x="820" y="900" width="180" height="160" rx="6" fill="#f4f4f4" stroke="#222" stroke-width="1.5"/>
-  <text x="704" y="304" text-anchor="end" font-size="11">GPIO7</text>
+  <text x="704" y="304" text-anchor="end" font-size="11">GPIO7 (pin 3)</text>
   <polyline points="710,300 790,300 790,940 820,940" fill="none" stroke="#17becf" stroke-width="2.5"/>
   <text x="826" y="944" font-size="11">10  SDA</text>
-  <text x="704" y="322" text-anchor="end" font-size="11">GPIO8</text>
+  <text x="704" y="322" text-anchor="end" font-size="11">GPIO8 (pin 5)</text>
   <polyline points="710,318 775,318 775,960 820,960" fill="none" stroke="#0e7c86" stroke-width="2.5"/>
   <text x="826" y="964" font-size="11">8  SCL</text>
-  <text x="704" y="340" text-anchor="end" font-size="11">GPIO22</text>
+  <text x="704" y="340" text-anchor="end" font-size="11">GPIO22 (pin 16)</text>
   <polyline points="710,336 760,336 760,980 820,980" fill="none" stroke="#8c564b" stroke-width="2.5"/>
   <text x="826" y="984" font-size="11">9  INT</text>
-  <text x="704" y="358" text-anchor="end" font-size="11">GPIO23</text>
+  <text x="704" y="358" text-anchor="end" font-size="11">GPIO23 (pin 7)</text>
   <polyline points="710,354 745,354 745,1000 820,1000" fill="none" stroke="#b8860b" stroke-width="2.5"/>
   <text x="826" y="1004" font-size="11">7  RST</text>
-  <text x="704" y="376" text-anchor="end" font-size="11">3V3</text>
+  <text x="704" y="376" text-anchor="end" font-size="11">3V3 (pin 17)</text>
   <polyline points="710,372 730,372 730,1020 820,1020" fill="none" stroke="#d63384" stroke-width="2.5"/>
   <text x="826" y="1024" font-size="11">6  VCC (3.3 V)</text>
   <text x="910" y="920" font-size="13" font-weight="bold" text-anchor="middle">10P touch breakout</text>
@@ -220,6 +223,106 @@
   <text x="1150" y="966" font-size="11" text-anchor="middle" fill="#555">touch tail (10-pin, separate)</text>
   <text x="1150" y="998" font-size="10" text-anchor="middle" fill="#555">ILI2132A, I2C addr 0x41</text>
   <text x="1150" y="1012" font-size="10" text-anchor="middle" fill="#555">VCC is 3.3 V only. Never 5 V.</text>
-  <text x="560" y="1044" font-size="10" text-anchor="middle" fill="#555">All NANO pins used are on header P1 (schematic-confirmed): see hardware.md</text>
+  <!-- ===== Header P1 pin map ===== -->
+  <rect x="40" y="892" width="660" height="176" rx="6" fill="#fff" stroke="#222" stroke-width="1"/>
+  <text x="52" y="910" font-size="12" font-weight="bold">P4-NANO header P1 (2x13): pin number, printed label, what this build connects</text>
+  <rect x="52" y="920" width="49" height="50" fill="#ffe0bf" stroke="#222" stroke-width="1"/>
+  <text x="76.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">2</text>
+  <text x="76.5" y="948" font-size="10" text-anchor="middle">5V</text>
+  <text x="76.5" y="962" font-size="8" text-anchor="middle" fill="#555">5 V in</text>
+  <rect x="101" y="920" width="49" height="50" fill="#ffe0bf" stroke="#222" stroke-width="1"/>
+  <text x="125.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">4</text>
+  <text x="125.5" y="948" font-size="10" text-anchor="middle">5V</text>
+  <rect x="150" y="920" width="49" height="50" fill="#dddddd" stroke="#222" stroke-width="1"/>
+  <text x="174.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">6</text>
+  <text x="174.5" y="948" font-size="10" text-anchor="middle">GND</text>
+  <text x="174.5" y="962" font-size="8" text-anchor="middle" fill="#555">ground</text>
+  <rect x="199" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="223.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">8</text>
+  <text x="223.5" y="948" font-size="10" text-anchor="middle">GPIO37</text>
+  <rect x="248" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="272.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">10</text>
+  <text x="272.5" y="948" font-size="10" text-anchor="middle">GPIO38</text>
+  <rect x="297" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="321.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">12</text>
+  <text x="321.5" y="948" font-size="10" text-anchor="middle">GPIO4</text>
+  <rect x="346" y="920" width="49" height="50" fill="#dddddd" stroke="#222" stroke-width="1"/>
+  <text x="370.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">14</text>
+  <text x="370.5" y="948" font-size="10" text-anchor="middle">GND</text>
+  <text x="370.5" y="962" font-size="8" text-anchor="middle" fill="#555">ground</text>
+  <rect x="395" y="920" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="419.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">16</text>
+  <text x="419.5" y="948" font-size="10" text-anchor="middle">GPIO22</text>
+  <text x="419.5" y="962" font-size="8" text-anchor="middle" fill="#555">touch INT</text>
+  <rect x="444" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="468.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">18</text>
+  <text x="468.5" y="948" font-size="10" text-anchor="middle">GPIO24</text>
+  <text x="468.5" y="962" font-size="8" text-anchor="middle" fill="#555">leave free</text>
+  <rect x="493" y="920" width="49" height="50" fill="#dddddd" stroke="#222" stroke-width="1"/>
+  <text x="517.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">20</text>
+  <text x="517.5" y="948" font-size="10" text-anchor="middle">GND</text>
+  <text x="517.5" y="962" font-size="8" text-anchor="middle" fill="#555">ground</text>
+  <rect x="542" y="920" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="566.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">22</text>
+  <text x="566.5" y="948" font-size="10" text-anchor="middle">GPIO27</text>
+  <text x="566.5" y="962" font-size="8" text-anchor="middle" fill="#555">panel RST</text>
+  <rect x="591" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="615.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">24</text>
+  <text x="615.5" y="948" font-size="10" text-anchor="middle">GPIO33</text>
+  <rect x="640" y="920" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="664.5" y="934" font-size="11" font-weight="bold" text-anchor="middle">26</text>
+  <text x="664.5" y="948" font-size="10" text-anchor="middle">GPIO36</text>
+  <rect x="52" y="974" width="49" height="50" fill="#fbd5e6" stroke="#222" stroke-width="1"/>
+  <text x="76.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">1</text>
+  <text x="76.5" y="1002" font-size="10" text-anchor="middle">3V3</text>
+  <text x="76.5" y="1016" font-size="8" text-anchor="middle" fill="#555">3.3 V out</text>
+  <rect x="101" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="125.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">3</text>
+  <text x="125.5" y="1002" font-size="10" text-anchor="middle">GPIO7</text>
+  <text x="125.5" y="1016" font-size="8" text-anchor="middle" fill="#555">touch SDA</text>
+  <rect x="150" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="174.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">5</text>
+  <text x="174.5" y="1002" font-size="10" text-anchor="middle">GPIO8</text>
+  <text x="174.5" y="1016" font-size="8" text-anchor="middle" fill="#555">touch SCL</text>
+  <rect x="199" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="223.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">7</text>
+  <text x="223.5" y="1002" font-size="10" text-anchor="middle">GPIO23</text>
+  <text x="223.5" y="1016" font-size="8" text-anchor="middle" fill="#555">touch RST</text>
+  <rect x="248" y="974" width="49" height="50" fill="#dddddd" stroke="#222" stroke-width="1"/>
+  <text x="272.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">9</text>
+  <text x="272.5" y="1002" font-size="10" text-anchor="middle">GND</text>
+  <text x="272.5" y="1016" font-size="8" text-anchor="middle" fill="#555">ground</text>
+  <rect x="297" y="974" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="321.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">11</text>
+  <text x="321.5" y="1002" font-size="10" text-anchor="middle">GPIO5</text>
+  <rect x="346" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="370.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">13</text>
+  <text x="370.5" y="1002" font-size="10" text-anchor="middle">GPIO20</text>
+  <text x="370.5" y="1016" font-size="8" text-anchor="middle" fill="#555">GPS RX out</text>
+  <rect x="395" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="419.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">15</text>
+  <text x="419.5" y="1002" font-size="10" text-anchor="middle">GPIO21</text>
+  <text x="419.5" y="1016" font-size="8" text-anchor="middle" fill="#555">GPS TX in</text>
+  <rect x="444" y="974" width="49" height="50" fill="#fbd5e6" stroke="#222" stroke-width="1"/>
+  <text x="468.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">17</text>
+  <text x="468.5" y="1002" font-size="10" text-anchor="middle">3V3</text>
+  <text x="468.5" y="1016" font-size="8" text-anchor="middle" fill="#555">3.3 V out</text>
+  <rect x="493" y="974" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="517.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">19</text>
+  <text x="517.5" y="1002" font-size="10" text-anchor="middle">GPIO25</text>
+  <text x="517.5" y="1016" font-size="8" text-anchor="middle" fill="#555">leave free</text>
+  <rect x="542" y="974" width="49" height="50" fill="#fff7c2" stroke="#222" stroke-width="1"/>
+  <text x="566.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">21</text>
+  <text x="566.5" y="1002" font-size="10" text-anchor="middle">GPIO26</text>
+  <text x="566.5" y="1016" font-size="8" text-anchor="middle" fill="#555">dim PWM</text>
+  <rect x="591" y="974" width="49" height="50" fill="#ffffff" stroke="#222" stroke-width="1"/>
+  <text x="615.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">23</text>
+  <text x="615.5" y="1002" font-size="10" text-anchor="middle">GPIO32</text>
+  <rect x="640" y="974" width="49" height="50" fill="#dddddd" stroke="#222" stroke-width="1"/>
+  <text x="664.5" y="988" font-size="11" font-weight="bold" text-anchor="middle">25</text>
+  <text x="664.5" y="1002" font-size="10" text-anchor="middle">GND</text>
+  <text x="664.5" y="1016" font-size="8" text-anchor="middle" fill="#555">ground</text>
+  <text x="52" y="1042" font-size="10" fill="#555">Even pins are one row, odd pins the other. Pin 1 is a 3V3 pin: never put 5 V on pin 1 or 17.</text>
+  <text x="52" y="1058" font-size="10" fill="#555">Yellow = signal wire used here. Pins 18, 19 are the USB serial pins: leave free. Source: NANO schematic (hardware.md).</text>
   </g>
 </svg>
