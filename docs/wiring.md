@@ -59,14 +59,27 @@ All terminal blocks: strip 6 mm, insert, tighten, tug-test.
 |---|---|---|
 | 12 V supply + | Pololu **VIN** | red |
 | 12 V supply - | Pololu **GND** | black |
-| 12 V supply + | LED driver **VIN** | red |
-| 12 V supply - | LED driver **GND** | black |
 | Pololu **VOUT** (5 V) | P4-NANO header pin labelled **5V** | red |
 | Pololu **GND** | P4-NANO header pin labelled **GND** | black |
 
 Check with the meter before going on: Pololu VOUT to GND reads **4.9-5.1 V**. If it reads 12 V you wired VIN and VOUT backwards. Power off.
 
 On the bench you can skip the Pololu and just use USB-C for the P4-NANO. You still need 12 V for the LED driver.
+
+### LED driver, pad by pad
+
+The driver board has two pads on one edge (**LED+**, **LED-**) and four on the other (**GND**, **VIN**, **GND**, **PWM**). The two GND pads are the same connection: one takes the supply, the other takes the P4-NANO ground. The old PT4115 (1R0) module has the same pads and wires the same way.
+
+| Driver pad | Goes to | Wire |
+|---|---|---|
+| **VIN** | 12 V supply + | red |
+| **GND** (next to VIN) | 12 V supply - | black |
+| **GND** (next to PWM) | P4-NANO header **GND** (pin 6 or 9) | black |
+| **PWM** | P4-NANO header **GPIO26** (pin 21) | blue |
+| **LED+** | panel pins 39 and 40 (Step 3) | red |
+| **LED-** | panel pins 31 and 32 (Step 3). Never to ground. | black |
+
+The driver needs 12 V: it cannot light the backlight from 5 V. If the P4-NANO runs from USB-C, the GND-to-GND wire above is what gives the PWM signal its return path, so do not skip it.
 
 ## Step 3. Panel side: the 40-pin breakout
 
@@ -99,7 +112,7 @@ Pins 33 and 34 are inputs with nothing on the panel holding them, so they must b
 
 The header has two 3V3 pins (P1 pins 1 and 17) and five GND pins (6, 9, 14, 20, 25). You will run out of 3V3 pins: join the 3.3 V wires on the perfboard or with a Y jumper.
 
-LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26**.
+LED driver PWM: one wire from the driver **PWM** pad to P4-NANO header **GPIO26** (pin 21), plus the driver's second **GND** pad to a header **GND** pin (table in Step 2).
 
 ## Step 4. Video side: the 15-pin breakout on the P4-NANO
 
