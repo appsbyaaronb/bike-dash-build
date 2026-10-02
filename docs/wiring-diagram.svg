@@ -42,7 +42,7 @@
   <line x1="60" y1="454" x2="45" y2="454" stroke="#222" stroke-width="2"/>
   <use href="#gnd" x="45" y="454"/>
   <text x="66" y="484">VIN (12 V)</text>
-  <text x="66" y="510">GND (NANO GND)</text>
+  <text x="66" y="510">GND (NANO pin 9)</text>
   <line x1="60" y1="506" x2="45" y2="506" stroke="#222" stroke-width="2"/>
   <use href="#gnd" x="45" y="506"/>
   <text x="66" y="536">PWM</text>

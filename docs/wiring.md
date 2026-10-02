@@ -74,7 +74,7 @@ The driver board has two pads on one edge (**LED+**, **LED-**) and four on the o
 |---|---|---|
 | **VIN** | 12 V supply + | red |
 | **GND** (next to VIN) | 12 V supply - | black |
-| **GND** (next to PWM) | P4-NANO header **GND** (pin 6 or 9) | black |
+| **GND** (next to PWM) | P4-NANO header **GND**, pin 9 (pin 6 has the supply) | black |
 | **PWM** | P4-NANO header **GPIO26** (pin 21) | blue |
 | **LED+** | panel pins 39 and 40 (Step 3) | red |
 | **LED-** | panel pins 31 and 32 (Step 3). Never to ground. | black |
