@@ -17,7 +17,7 @@ def w(pts,color,dash=False,width=2.5):
 def dot(x,y,c): A(f'<circle cx="{x}" cy="{y}" r="4" fill="{c}"/>')
 
 W,H=1500,1040
-A(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Bench wiring, every wire pin to pin. 12 V supply feeds the Pololu (IN, GND) and the LED driver (VIN, GND). Pololu OUT to NANO pin 2, GND to pin 6. LED driver PWM to pin 21 (GPIO26), GND to pin 9, LED+ to panel 39/40, LED- to panel 31/32. NANO pin 22 (GPIO27) to panel 5 RESET. NANO pin 1 (3V3) to a 1-to-3 splitter feeding panel 6, panel 33 and GPS 3V3. 15-pin breakout pins 14, 15 (3V3) to panel 2, 3; its GND pins 10, 7, 1, 4, 13 to panel 7, 10, 13, 16, 19; MIPI D0, D1, CLK pairs to panel 8/9, 11/12, 17/18. NANO pin 25 GND to panel 34. GPS: GND pin 14, TX to pin 15, RX to pin 13. Touch: SDA pin 3, SCL pin 5, INT pin 16, RST pin 7, VCC pin 17, GND pin 20.">')
+A(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Bench wiring, every wire pin to pin. 12 V supply feeds the Pololu (IN, GND) and the LED driver (VIN, GND). Pololu OUT to NANO pin 2, GND to pin 6. LED driver PWM to pin 21, GND to pin 9, LED+ to panel 39/40, LED- to panel 31/32. NANO pin 22 to panel 5 RESET. NANO pin 1 (3V3) to a 1-to-3 splitter feeding panel 6, panel 33 and GPS 3V3. 15-pin breakout pins 14, 15 (3V3) to panel 2, 3; its GND pins 10, 7, 1, 4, 13 to panel 7, 10, 13, 16, 19; MIPI D0, D1, CLK pairs to panel 8/9, 11/12, 17/18. NANO pin 25 GND to panel 34. GPS: GND pin 14, TX to pin 15, RX to pin 13. Touch: SDA pin 3, SCL pin 5, INT pin 16, RST pin 7, VCC pin 17, GND pin 20.">')
 A(f'<rect x="0" y="0" width="{W}" height="{H}" fill="#ffffff"/>')
 A('<g font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#222">')
 t(750,28,'bike-dash bench wiring: every wire, pin to pin',18,'middle',bold=True)
@@ -68,8 +68,8 @@ for (a,c,b),y in zip(rows15,ry): w([(1030,y),(1130,y)],c)
 # NANO pin 25 GND -> panel 34
 w([(770,590),(885,590),(885,735),(1130,735)],BLK)
 # touch
-tr=[('pin 3 (GPIO7)',CYA,'10  SDA'),('pin 5 (GPIO8)',TEAL,'8  SCL'),('pin 16 (GPIO22)',BRN,'9  INT'),
-    ('pin 7 (GPIO23)',GOLD,'7  RST'),('pin 17 (3V3)',PINK,'6  VCC (3.3 V)'),('pin 20 (GND)',BLK,'5  GND')]
+tr=[('pin 3',CYA,'10  SDA'),('pin 5',TEAL,'8  SCL'),('pin 16',BRN,'9  INT'),
+    ('pin 7',GOLD,'7  RST'),('pin 17 (3V3)',PINK,'6  VCC (3.3 V)'),('pin 20 (GND)',BLK,'5  GND')]
 ty=[615+25*i for i in range(6)]; tx=[870-15*i for i in range(6)]; by=[850+24*i for i in range(6)]
 for (a,c,b),y,x,yy in zip(tr,ty,tx,by): w([(770,y),(x,y),(x,yy),(900,yy)],c)
 # tails
@@ -100,15 +100,14 @@ t(116,539,'GND'); t(116,569,'IN'); t(264,539,'OUT',anchor='end'); t(264,569,'GND
 t(190,596,'EN, PG: leave open',10,'middle','#555'); t(190,610,'the two GND pads are joined',10,'middle','#555')
 # NANO
 box(470,110,300,680,'#eef3fb',8); t(620,134,'Waveshare ESP32-P4-NANO',14,'middle',bold=True)
-t(476,152,'pin n = position on header P1',10,fill='#555'); t(476,165,'(name) = label printed on the board',10,fill='#555')
-t(476,424,'pin 21 (GPIO26)'); t(476,449,'pin 9 (GND)'); t(476,539,'pin 2 (5V)'); t(476,569,'pin 6 (GND)')
+t(476,152,'pin numbers = position on',10,fill='#555'); t(476,165,'header P1: count the pins',10,fill='#555')
+t(476,424,'pin 21'); t(476,449,'pin 9 (GND)'); t(476,539,'pin 2 (5V)'); t(476,569,'pin 6 (GND)')
 t(476,610,'bench: USB-C can power the board',10,fill='#555'); t(476,623,'instead of the Pololu (leave pins 2, 6 open)',10,fill='#555')
-for y,s in ((150,'pin 14 (GND)'),(172,'pin 15 (GPIO21)'),(194,'pin 13 (GPIO20)'),(225,'pin 1 (3V3)'),(305,'pin 22 (GPIO27)'),(590,'pin 25 (GND)')):
+for y,s in ((150,'pin 14 (GND)'),(172,'pin 15'),(194,'pin 13'),(225,'pin 1 (3V3)'),(305,'pin 22'),(590,'pin 25 (GND)')):
     t(764,y+4,s,anchor='end')
 for (a,c,b),y in zip(tr,ty): t(764,y+4,a,anchor='end')
 A('<rect x="742" y="420" width="28" height="120" fill="#d9e2f3" stroke="#222"/>')
 t(756,480,'DSI 15-pin',10,'middle',extra=' transform="rotate(-90 756 480)"')
-t(600,345,'C6 radio on GPIO14–19, 54 (internal)',11,'middle','#555')
 # splitter
 box(800,205,80,84,'#fde8f1'); t(840,243,'3V3 splitter',10,'middle'); t(840,256,'1 in → 3 out',10,'middle')
 # GPS
@@ -156,17 +155,18 @@ pins={1:('3V3','3V3 splitter'),2:('5V','5 V in'),3:('GPIO7','touch SDA'),4:('5V'
 23:('GPIO32',''),24:('GPIO33',''),25:('GND','panel 34'),26:('GPIO36','')}
 fill={'3V3':'#fbd5e6','5V':'#ffe0bf','GND':'#dddddd'}
 A('<rect x="20" y="822" width="670" height="204" rx="6" fill="#fff" stroke="#222" stroke-width="1"/>')
-t(32,842,'P4-NANO header P1 (2x13): pin number, printed label, what plugs into it',12,bold=True)
+t(32,842,'P4-NANO header P1 (2x13): pin number and what plugs into it',12,bold=True)
 x0,cw,ch=32,50,52
 for y,start in ((852,2),(908,1)):
     for i in range(13):
         nn=start+2*i; sig,use=pins[nn]; x=x0+i*cw
         f=fill.get(sig,'#fff7c2' if use and use!='leave free' else '#ffffff')
         A(f'<rect x="{x}" y="{y}" width="{cw}" height="{ch}" fill="{f}" stroke="#222" stroke-width="1"/>')
-        t(x+cw/2,y+14,str(nn),11,'middle',bold=True); t(x+cw/2,y+28,sig,10,'middle')
+        t(x+cw/2,y+14,str(nn),11,'middle',bold=True)
+        if not sig.startswith('GPIO'): t(x+cw/2,y+28,sig,10,'middle')
         if use: t(x+cw/2,y+43,use,8,'middle','#555')
 t(32,980,'Even pins are one row, odd pins the other. Pins 1 and 17 are 3.3 V outputs: never put 5 V on them.',10,fill='#555')
-t(32,995,'Pins 18, 19 are the USB serial pins: leave free. Pin 4 (5V) is spare. Source: NANO schematic (hardware.md).',10,fill='#555')
+t(32,995,'White = nothing plugs in. Pins 18, 19: leave free. Pin 4 (5V) is spare. Source: NANO schematic (hardware.md).',10,fill='#555')
 t(32,1010,'3V3 splitter: a 1-to-3 Dupont Y cable, or one row of a mini breadboard. It feeds panel 6, panel 33 and GPS 3V3.',10,fill='#555')
 A('</g>'); A('</svg>')
 open(sys.argv[1],'w',encoding='utf-8').write('\n'.join(o)+'\n')
