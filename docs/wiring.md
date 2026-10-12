@@ -37,17 +37,18 @@ Multimeter, small flat screwdriver for the terminal blocks, wire strippers, a pa
 2. Flash `esphome/bike-dash-nodisplay.yaml` (the same config without the `display:` block).
 3. Confirm the log shows the C6 radio coming up and Wi-Fi connecting. If this does not work, nothing else matters yet. (Done 2026-09-28; the board now runs `bike-dash-live.yaml`.)
 
-## Step 1. Set the LED driver current before it ever touches the panel
+## Step 1. Check the LED driver current before it ever touches the panel
 
-The backlight driver is an eletechsup LD24AJTA (AliExpress, "DC 6-24V 30-900mA Adjustable LED Driver"). Its current is set by a small pot, up to a ceiling of 0.1 V / RCS (the board's sense resistor). It can reach 900 mA, which will destroy the backlight, so it is set on a meter first. The pads are bare: solder six wires (VIN, GND, LED+, LED-, PWM, GND).
+The backlight driver is an eletechsup LD24AJTA (AliExpress, "DC 6-24V 30-900mA Adjustable LED Driver"): a PT4115 with a 0.11 ohm sense resistor (R110), so it puts out about 0.91 A whenever its PWM pad is high or open. That would destroy the backlight (270 mA maximum). The pot on this board does nothing (tested 2026-10-12: 0.92 A at any setting), so the current is limited by the firmware instead: `max_power: 0.28` on the backlight output caps the PWM duty, and 100 % brightness measures **0.262 A**.
 
-1. Meter: red probe in the **10A** jack, dial on 10A DC. The mA jack is often fused at 200 mA.
-2. Turn the pot fully toward **decrease** (arrows are printed next to it).
-3. 12 V to VIN / GND. Red probe on **LED+**, black on **LED-**, nothing else on the output. PWM open (floating = full on).
-4. Power on. Turn the pot slowly toward increase until the meter reads **0.26 A**. Do not go past **0.27 A**: the panel datasheet gives 270 mA as the working current and its absolute maximum is 30 mA per LED string x 9 strings = 270 mA, so there is no headroom above it.
-5. Power off, remove the meter. The setting holds whatever the load is.
+1. Wire the driver fully (Step 2), including **PWM** to header pin 21 and the second GND to pin 9. Leave LED+ and LED- off the panel.
+2. Meter: red probe in the **10A** jack, dial on 10A DC. Red probe on **LED+**, black on **LED-**.
+3. Boot the P4-NANO with the current firmware, then power the 12 V.
+4. The meter must read about **0.26 A**. If it reads 0.9 A, stop: the PWM wire is off or the firmware has no cap.
 
-If it stops rising around 0.10 A, RCS is too big (1 ohm = 100 mA ceiling); it needs 0.33 ohm or less.
+Never power the driver with the PWM pad open or the P4-NANO off, resetting or being flashed while the panel is connected: it runs at 0.91 A. A 1k resistor from PWM to GND on the driver holds it off until the firmware takes over; with it fitted, one 12 V supply can feed the Pololu and the driver together.
+
+The current is pulsed: 0.91 A for 28 % of the time. The proper fix is a 0.39 ohm sense resistor (ceiling about 256 mA), after which `max_power` can go.
 
 The old PT4115 modules (Amazon 3-pack) came with a 1R0 sense resistor = 100 mA, about 37 % brightness. Usable for a dim bench test only.
 
@@ -233,13 +234,13 @@ Test: with the dash running, the log prints satellites, speed and course from th
 ## Step 5. Power-on order and first test
 
 1. Meter check, power off: panel pin 2 to any GND must **not** be a short. Panel pin 39 to pin 31 must not be a short.
-2. Power the 12 V supply. LED driver output is now live but nothing is drawn yet (it is fine; it is a current source, open circuit is safe).
-3. Plug USB-C into the P4-NANO (or turn on the Pololu 5 V).
+2. Plug USB-C into the P4-NANO (or turn on the Pololu 5 V) and let it boot, so the PWM pin is under firmware control.
+3. Power the 12 V supply.
 4. Flash the config **with** the `display:` block. Expect: backlight comes on (Stage 1), screen shows green with a grey box.
 
 | Symptom | Check |
 |---|---|
-| Backlight off | GPIO26 jumper; DIM floating should mean full on, so if it is still off the LED driver has no 12 V or LED+/- are swapped |
+| Backlight off | pin 21 jumper and the GND wire to pin 9; then the LED driver has no 12 V or LED+/- are swapped |
 | Backlight on, screen black, no errors in the log | Reset wire (GPIO27 to pin 5); STBYB wire (pin 11 to panel 6) and pin 11 reads 3.3 V after boot; panel tail inserted contacts-down vs contacts-up; THS_ZERO note in hardware.md; then try `0xB2, 0x10` in place of `0xB2, 0x50` in the init sequence (Espressif's value for this chip) |
 | Picture jumps or will not hold still | THS_ZERO (hardware.md): the datasheet names exactly this symptom |
 | Log shows DSI errors | A pair swapped, or a pair to the wrong lane; try swapping + and - of one pair, then lanes 0 and 1 |

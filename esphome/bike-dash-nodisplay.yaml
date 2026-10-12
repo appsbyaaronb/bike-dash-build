@@ -122,12 +122,16 @@ switch:
     restore_mode: ALWAYS_ON
     internal: true
 
-# Backlight: LEDC PWM into the LED driver PWM pin. About 5 kHz so it is not visible.
+# Backlight: LEDC PWM into the LED driver PWM pin.
+# The LD24AJTA runs at 0.91 A (0.1 V / 0.11 ohm) whenever PWM is high; the pot is ignored.
+# max_power caps the duty so 100 % brightness averages 0.28 x 0.91 A = about 255 mA (panel max 270 mA).
+# Do not raise max_power unless the driver's sense resistor is changed. 1 kHz keeps the duty accurate.
 output:
   - platform: ledc
     id: backlight_pwm
     pin: ${backlight_pwm_pin}
-    frequency: 5000Hz
+    frequency: 1000Hz
+    max_power: 0.28
 
 light:
   - platform: monochromatic

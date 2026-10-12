@@ -131,10 +131,10 @@ Storage is microSD (SDIO 3.0). The only ESPHome preset for this board is `WAVESH
 
 ## Backlight driver: eletechsup LD24AJTA
 
-- Buck constant-current, 6-24 V in, 30-900 mA set by a pot. Ceiling is 0.1 V / RCS. Ordered 2026-09-28 from AliExpress ($1.15).
-- Set to **260 mA** on a meter before connecting the panel, never above 270 (wiring.md step 1). Bare pads: VIN, GND, LED+, LED-, PWM, GND.
+- Buck constant-current (PT4115), 6-24 V in. RCS is 0.11 ohm (R110), so the ceiling is 0.1 V / RCS = 0.91 A. The pot on this board has no effect (measured 0.92 A at any setting, 2026-10-12). Current is limited in firmware: `max_power: 0.28` on the LEDC output, measured 0.262 A at 100 % brightness. Pulsed at 0.91 A peak; a 0.39 ohm RCS is the proper fix.
+- Check for about **260 mA** on a meter before connecting the panel, never above 270 (wiring.md step 1). Pads: VIN, GND, LED+ (printed D+), LED-, PWM, GND.
 - Buck topology: Vin must be above the LED string (9.0 V typ, 10.2 max) plus headroom. 12 V is fine. 5 V is not. Headroom not in the listing; check brightness on the bench at 12 V.
-- PWM pad: 100 Hz-20 kHz per the listing. The LEDC output on GPIO26 runs about 5 kHz.
+- PWM pad: 100 Hz-20 kHz per the listing. The LEDC output on GPIO26 runs at 1 kHz.
 - Riverdi's own reference design drives the backlight with a TPS61169 boost from 2.7-5.5 V and PWM at 5-100 kHz. That is for their chip, not a limit of the panel.
 - Replaces the PT4115 modules: those arrived with a 1R0 sense resistor (100 mA, about 37 % brightness). Getting 270 mA from them needs a 0.36-0.39 ohm 1206 resistor swap (DigiKey RL1206FR-070R36L).
 
