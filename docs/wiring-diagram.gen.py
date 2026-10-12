@@ -17,7 +17,7 @@ def w(pts,color,dash=False,width=2.5):
 def dot(x,y,c): A(f'<circle cx="{x}" cy="{y}" r="4" fill="{c}"/>')
 
 W,H=1500,1040
-A(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Bench wiring, every wire pin to pin. 12 V supply feeds the Pololu (IN, GND) and the LED driver (VIN, GND). Pololu OUT to NANO pin 2, GND to pin 6. LED driver PWM to pin 21, GND to pin 9, LED+ to panel 39/40, LED- to panel 31/32. NANO pin 22 to panel 5 RESET. NANO pin 1 (3V3) to panel 33. NANO pin 11 to panel 6 STBYB (driven high by the code). NANO pin 4 (5V) to GPS 5V. 15-pin breakout pins 14, 15 (3V3) to panel 2, 3; its GND pins 10, 7, 1, 4, 13 to panel 7, 10, 13, 16, 19; MIPI D0, D1, CLK pairs to panel 8/9, 11/12, 17/18. NANO pin 25 GND to panel 34. GPS: GND pin 14, TX to pin 15, RX to pin 13. Touch: SDA pin 3, SCL pin 5, INT pin 16, RST pin 7, VCC pin 17, GND pin 20.">')
+A(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Bench wiring, every wire pin to pin. 12 V supply feeds the Pololu (IN, GND) and the LED driver (VIN, GND). Pololu OUT to NANO pin 2, GND to pin 6. LED driver PWM to pin 21, GND to pin 9, a 1k resistor joins those two wires (PWM to GND), LED+ to panel 39/40, LED- to panel 31/32. NANO pin 22 to panel 5 RESET. NANO pin 1 (3V3) to panel 33. NANO pin 11 to panel 6 STBYB (driven high by the code). NANO pin 4 (5V) to GPS 5V. 15-pin breakout pins 14, 15 (3V3) to panel 2, 3; its GND pins 10, 7, 1, 4, 13 to panel 7, 10, 13, 16, 19; MIPI D0, D1, CLK pairs to panel 8/9, 11/12, 17/18. NANO pin 25 GND to panel 34. GPS: GND pin 14, TX to pin 15, RX to pin 13. Touch: SDA pin 3, SCL pin 5, INT pin 16, RST pin 7, VCC pin 17, GND pin 20.">')
 A(f'<rect x="0" y="0" width="{W}" height="{H}" fill="#ffffff"/>')
 A('<g font-family="Arial, Helvetica, sans-serif" font-size="12" fill="#222">')
 t(750,28,'bike-dash bench wiring: every wire, pin to pin',18,'middle',bold=True)
@@ -36,6 +36,11 @@ w([(110,355),(75,355),(75,445),(470,445)],BLK)
 w([(110,380),(92,380),(92,420),(470,420)],BLUE)
 t(290,414,'PWM dim',11,'middle',BLUE)
 t(290,459,'driver GND',11,'middle')
+# 1k pull-down, PWM to GND: holds the driver off until the NANO drives pin 21
+w([(150,420),(150,426)],'#222',width=2); w([(150,439),(150,445)],'#222',width=2)
+A('<rect x="144" y="426" width="12" height="13" fill="#f3d9a4" stroke="#222" stroke-width="1.5"/>')
+dot(150,420,BLUE); dot(150,445,BLK)
+t(162,436,'1k resistor, PWM to GND: driver off until boot',10,fill='#b00')
 # Pololu -> NANO
 w([(270,535),(470,535)],ORG); t(370,529,'5 V',11,'middle','#c8600a')
 w([(270,565),(470,565)],BLK); t(370,579,'GND',11,'middle')
@@ -88,7 +93,7 @@ t(190,168,'both + wires on the + post, both − on the − post',0,'middle')  # 
 o.pop()
 # LED driver
 box(110,230,160,180); t(190,250,'LD24AJTA LED driver',14,'middle',bold=True)
-t(190,266,'eletechsup, 30–900 mA, pot-set',11,'middle'); t(190,281,'set 0.26 A on meter FIRST',11,'middle','#b00')
+t(190,266,'eletechsup, 0.91 A at full PWM',11,'middle'); t(190,281,'check 0.26 A on meter FIRST',11,'middle','#b00')
 t(116,309,'GND'); t(116,334,'VIN'); t(116,359,'GND'); t(116,384,'PWM')
 t(264,344,'LED+',anchor='end'); t(264,374,'LED−',anchor='end')
 t(190,402,'PT4115 (1R0) stand-in: same pads',9.5,'middle','#555')
